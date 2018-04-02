@@ -1,12 +1,8 @@
 This is a NodeJS/ExpressJS Adapter REST API. It orchestrates multiple calls to backend business APIs and returns a single contract to a client. The application uses ReactiveX pattern with rx.js
 
-The infrastructure architecture was build to run on AWS Elastic Container Service (ECS) as the container orchestrator, Amazon Elastic Container Registry (ECR) as the Docker Container Repository and Amazon Application Load Balancer to manage the various container instances.
+It runs on containers in OpenShift.
 
-The delivery pipepline uses AWS CodePipeline and AWS Code Build. The pipeline is trigger as the developer pushes to the master branch.
-
-
-The application can be run locally with PM2 process manager or locally on Docker container or on the AWS cloud.
-
+---------------
 
 # Run it locally
 $ npm start
