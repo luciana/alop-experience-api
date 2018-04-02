@@ -14,7 +14,7 @@ WORKDIR /usr/src/alop-adapter-app
 ADD . /usr/src/alop-adapter-app
 
 # server.js file binds to port 8081, set EXPOSE instruction to have it mapped by the docker daemon
-EXPOSE 8081
+EXPOSE 8080
 
 # Install app dependencies
 RUN npm install
