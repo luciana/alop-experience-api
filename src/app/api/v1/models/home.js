@@ -22,6 +22,8 @@ const workoutService = require('../services/workout');
 const workoutMapping = require('../mappings/workout');
 const trackingService = require('../services/tracking');
 const activityMapping = require('../mappings/activity');
+const meditationService = require('../services/meditation');
+const meditationMapping = require('../mappings/meditation');
 
 class home {
     getAccount(req, res){
@@ -52,7 +54,16 @@ class home {
                 })
             });
 
-		return Observable.concat(w, Observable.forkJoin(a,u).concatMap(results => Observable.from(results)));
+        const m = meditationService.get(req.header)
+            .map((data) => ({
+                    meditation: meditationMapping.transform(data)
+                })).catch((error) => {
+                    return Observable.of({
+                        meditation: {}
+                    })
+                });
+
+		return Observable.concat(m, Observable.forkJoin(u).concatMap(results => Observable.from(results)));
     }
 }
 module.exports = new home();
