@@ -10,12 +10,14 @@
 
 class meditation {
     transform(data){
-        var result = {};
-        result.id = data.id;
-        result.title = data.title;
-        result.duration = data.duration;
-        result.path = data.path;
-        return result;
+    	return data.meditations.assets.map((item) => {
+				var result = {};
+				result.id = item.id;
+				result.title = item.title;
+				result.duration = item.duration + " min";
+				result.path = item.path;
+				return result;
+		});
     }
 }
 

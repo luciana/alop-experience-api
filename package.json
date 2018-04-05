@@ -4,8 +4,7 @@
   "description": "Adapter API for ALOP mobile screen",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "start": "pm2 start server.js --no-daemon --watch",
-    "stop": "pm2 kill"
+    "start": "node server.js"
   },
   "author": "luciana",
   "license": "MIT",

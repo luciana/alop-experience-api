@@ -30,6 +30,7 @@ class apiCall {
 				observer.complete();
 				observer.error((error) => {
 					resp: "error processing response"
+					console.log(resp, error);
 				})
 				
 			})

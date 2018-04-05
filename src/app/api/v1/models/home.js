@@ -54,7 +54,7 @@ class home {
                 })
             });
 
-        const m = meditationService.get(req.header)
+        const m = meditationService.get(req.headers)
             .map((data) => ({
                     meditation: meditationMapping.transform(data)
                 })).catch((error) => {
@@ -63,7 +63,7 @@ class home {
                     })
                 });
 
-		return Observable.concat(m, Observable.forkJoin(u).concatMap(results => Observable.from(results)));
+		return Observable.concat(m, Observable.forkJoin(w,a,u).concatMap(results => Observable.from(results)));
     }
 }
 module.exports = new home();

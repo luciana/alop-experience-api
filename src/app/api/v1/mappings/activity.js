@@ -17,8 +17,35 @@ class mappings {
         }).length.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     };
 
-    recent_items(limit, data){
-    	return data.slice(0,limit);
+    recent_activities(limit, data){
+        return data.slice(0,limit).map((d) => {
+            var result = {};
+            result.activity_id = d.id;
+            result.workout_id = d.workout.id;
+            result.workout_taken_on = d.created_at;
+            result.workout_title = d.workout.title;
+            result.workout_duration = d.workout.duration.description;            
+            return result;
+        });
+    }
+
+    monthly_activities(data){
+        return data.filter((item) => {
+            var activity_date = new Date(item.created_at); 
+            var date = new Date();
+            var fd = new Date(date.getFullYear(), date.getMonth(), 1);
+            var ld = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            return activity_date >= fd && activity_date <= ld;
+        })
+        .map((d) => {
+            var result = {};
+            result.activity_id = d.id;
+            result.workout_id = d.workout.id;
+            result.workout_taken_on = d.created_at;
+            result.workout_title = d.workout.title;
+            result.workout_duration = d.workout.duration.description;            
+            return result;
+        });
     }
 
      get_classes_taken_this_week(data){
@@ -53,7 +80,8 @@ class activity {
         result.minutes_taken_this_month = "000";
         result.classes_taken_this_year = m.get_classes_taken_this_year(data);;
         result.minutes_taken_this_year = "000";
-        result.recent_classes = m.recent_items(4,data);        
+        result.recent_activities = m.recent_activities(4,data);  
+        result.monthly_activities = m.monthly_activities(data);      
         return result;
     }
 }
