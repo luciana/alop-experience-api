@@ -32,6 +32,14 @@ $ docker ps -a
 $ docker logs <container id>
 
 
+# Able to modify files directly on the container locally. 
+docker run -it alop/alop-adapter-api
+docker ps
+docker exec -it <4 digits of container id> /bin/bash
+
+#look up mounted volumes
+
+
 # Test the API on local Docker container
 $ curl -v -X GET "http://localhost:3000/api/v1/home" -H "Authorization: Bearer xxx" -H "Accept: application/json" -H "Content-type: application/json" 
 

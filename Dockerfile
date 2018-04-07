@@ -1,8 +1,5 @@
-FROM node:latest
+FROM node:8
 MAINTAINER Luciana G Bruscino <luciana.bruscino@gmail.com>
-
-# install PM2
-#RUN npm install pm2 -g
 
 # create directory to hold the application code inside the image
 RUN mkdir -p /usr/src/alop-adapter-app
@@ -12,7 +9,7 @@ WORKDIR /usr/src/alop-adapter-app
 
 #bundle app's source code inside the Docker image
 #COPY . /usr/src/alop-adapter-app
-#COPY package*.json ./
+COPY package*.json ./
 
 ADD . /usr/src/alop-adapter-app
 

@@ -17,6 +17,15 @@ class mappings {
         }).length.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     };
 
+    count_minutes_taken_on(startDate, endDate, data){
+        return data.filter(function (item) {
+                    var date = new Date(item.created_at); 
+                    return date >= startDate && date <= endDate;
+        }).map((item) => {
+            return item.audio_time;
+        })
+    };
+
     recent_activities(limit, data){
         return data.slice(0,limit).map((d) => {
             var result = {};
@@ -24,7 +33,8 @@ class mappings {
             result.workout_id = d.workout.id;
             result.workout_taken_on = d.created_at;
             result.workout_title = d.workout.title;
-            result.workout_duration = d.workout.duration.description;            
+            result.workout_audio_time = d.workout.audio_time;
+            result.workout_duration = d.workout.duration.description;
             return result;
         });
     }
@@ -43,7 +53,8 @@ class mappings {
             result.workout_id = d.workout.id;
             result.workout_taken_on = d.created_at;
             result.workout_title = d.workout.title;
-            result.workout_duration = d.workout.duration.description;            
+            result.workout_audio_time = d.workout.audio_time;
+            result.workout_duration = d.workout.duration.description;
             return result;
         });
     }
@@ -68,6 +79,13 @@ class mappings {
      var ld = new Date(date.getFullYear(), 12, 0);
      return this.count_classes_taken_on(fd,ld,data);
     }
+
+    get_minutes_taken_this_week(data){
+        var date = new Date();
+        var fd = new Date(date.getTime() - 60*60*24* date.getDay()*1000);
+        var ld = new Date(date.getTime() + 60 * 60 *24 * 6 * 1000);
+        return this.count_minutes_taken_on(fd,ld,data)
+    }
 }
 
 class activity {
@@ -75,7 +93,7 @@ class activity {
         var result = {};
         var m = new mappings();
         result.classes_taken_this_week = m.get_classes_taken_this_week(data);
-        result.minutes_taken_this_week = "000";
+        result.minutes_taken_this_week = m.get_minutes_taken_this_week(data);
         result.classes_taken_this_month = m.get_classes_taken_this_month(data);
         result.minutes_taken_this_month = "000";
         result.classes_taken_this_year = m.get_classes_taken_this_year(data);;
