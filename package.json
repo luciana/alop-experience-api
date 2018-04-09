@@ -4,7 +4,7 @@
   "description": "Adapter API for ALOP mobile screen",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "supervisor server.js"
   },
   "author": "luciana",
   "license": "MIT",

@@ -18,6 +18,7 @@ class mappings {
     };
 
     count_minutes_taken_on(startDate, endDate, data){
+        //console.log("count_minutes_taken_on", data);
         return data.filter(function (item) {
                     var date = new Date(item.created_at); 
                     return date >= startDate && date <= endDate;
@@ -39,7 +40,7 @@ class mappings {
         });
     }
 
-    monthly_activities(data){
+    monthly_activities(data){      
         return data.filter((item) => {
             var activity_date = new Date(item.created_at); 
             var date = new Date();
@@ -84,8 +85,16 @@ class mappings {
         var date = new Date();
         var fd = new Date(date.getTime() - 60*60*24* date.getDay()*1000);
         var ld = new Date(date.getTime() + 60 * 60 *24 * 6 * 1000);
-        return this.count_minutes_taken_on(fd,ld,data)
+        return this.count_minutes_taken_on(fd,ld,data);
     }
+
+    get_minutes_taken_this_month(data){
+        var date = new Date();
+        var fd = new Date(date.getFullYear(), date.getMonth(), 1);
+        var ld = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        return this.count_minutes_taken_on(fd,ld,data);
+    }
+
 }
 
 class activity {
@@ -95,7 +104,7 @@ class activity {
         result.classes_taken_this_week = m.get_classes_taken_this_week(data);
         result.minutes_taken_this_week = m.get_minutes_taken_this_week(data);
         result.classes_taken_this_month = m.get_classes_taken_this_month(data);
-        result.minutes_taken_this_month = "000";
+        result.minutes_taken_this_month = m.get_minutes_taken_this_month(data);
         result.classes_taken_this_year = m.get_classes_taken_this_year(data);;
         result.minutes_taken_this_year = "000";
         result.recent_activities = m.recent_activities(4,data);  

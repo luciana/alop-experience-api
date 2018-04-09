@@ -23,8 +23,7 @@ class apiCall {
 		return h;
 	};
 	get(options){		
-		return Observable.create( observer  => {
-			//console.log(options);
+		return Observable.create( observer  => {		
 			request.get(options, (err, resp, body) => {
 				observer.next(body);
 				observer.complete();
