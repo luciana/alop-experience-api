@@ -1,6 +1,9 @@
 FROM node:8
 MAINTAINER Luciana G Bruscino <luciana.bruscino@gmail.com>
 
+# Install Node supervisor
+npm install supervisor
+
 # create directory to hold the application code inside the image
 RUN mkdir -p /usr/src/alop-adapter-app
 
