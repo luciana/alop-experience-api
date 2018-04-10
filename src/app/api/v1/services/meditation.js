@@ -12,7 +12,7 @@ let meditation = {};
 
 meditation.get = function(headers){
 	const options = {
-		uri: 'https://www.alotofpilates.com/api/v3/meditations/1',	
+		uri: apiCall.baseUrl + 'api/v3/meditations/1',	
 		headers: apiCall.parseHeaders(headers),
         json: true
     };
