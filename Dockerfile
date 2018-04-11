@@ -24,6 +24,5 @@ RUN npm install
 # Show current folder structure in logs
 RUN ls -al -R
 
-ENV NODE_ENV="production"
 # start the app
 CMD ["npm", "start"]
