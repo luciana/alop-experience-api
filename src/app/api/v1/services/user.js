@@ -12,7 +12,7 @@ let user = {};
 
 user.get = function(headers){
 	const options = {
-		uri: 'https://www.alotofpilates.com/api/v3/users',
+		uri: apiCall.baseUrl +"api/v3/users",
 		headers: apiCall.parseHeaders(headers),
 		json: true
 	};

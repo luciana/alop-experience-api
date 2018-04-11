@@ -13,18 +13,17 @@ class mappings {
     count_classes_taken_on(startDate, endDate, tracking){
         return tracking.filter(function (item) {
                     var date = new Date(item.created_at); 
-                    return date >= startDate && date <= endDate;        
+                    return date >= startDate && date <= endDate;   
         }).length.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     };
 
-    count_minutes_taken_on(startDate, endDate, data){
-        //console.log("count_minutes_taken_on", data);
+    count_minutes_taken_on(startDate, endDate, data){  
         return data.filter(function (item) {
                     var date = new Date(item.created_at); 
                     return date >= startDate && date <= endDate;
-        }).map((item) => {
-            return item.audio_time;
-        })
+        }).map((item) => {                      
+           return item.workout.audio_time;
+        }).reduce((total, seconds) => total + Math.floor(seconds / 60), 0)
     };
 
     recent_activities(limit, data){
@@ -95,6 +94,13 @@ class mappings {
         return this.count_minutes_taken_on(fd,ld,data);
     }
 
+    get_minutes_taken_this_year(data){
+        var date = new Date();
+        var fd = new Date(date.getFullYear(), 1, 0);
+        var ld = new Date(date.getFullYear(), 12, 0);
+        return this.count_minutes_taken_on(fd,ld,data);
+    }
+
 }
 
 class activity {
@@ -106,7 +112,7 @@ class activity {
         result.classes_taken_this_month = m.get_classes_taken_this_month(data);
         result.minutes_taken_this_month = m.get_minutes_taken_this_month(data);
         result.classes_taken_this_year = m.get_classes_taken_this_year(data);;
-        result.minutes_taken_this_year = "000";
+        result.minutes_taken_this_year = m.get_minutes_taken_this_year(data);;
         result.recent_activities = m.recent_activities(4,data);  
         result.monthly_activities = m.monthly_activities(data);      
         return result;

@@ -12,7 +12,7 @@ let tracking = {};
 
 tracking.get = function(headers){
 	const options = {
-		uri: 'https://www.alotofpilates.com/api/v3/trackings',	
+		uri: apiCall.baseUrl +"api/v3/trackings",	
 		headers: apiCall.parseHeaders(headers),
         json: true
     };

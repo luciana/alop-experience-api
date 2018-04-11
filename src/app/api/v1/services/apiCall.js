@@ -9,7 +9,6 @@
 
 var request = require('request');
 var Observable = require('rxjs/Observable').Observable;
-//var config = require('../../../../../config/config');
 var configModule = require('config');
 
 class apiCall {
@@ -29,8 +28,8 @@ class apiCall {
 		h['content-type'] = 'application/json';		
 		return h;
 	};
-	get(options){
-	console.log(options);	
+	get(options){	
+		//console.log(options);
 		return Observable.create( observer  => {		
 			request.get(options, (err, resp, body) => {
 				observer.next(body);
