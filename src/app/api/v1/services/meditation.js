@@ -11,6 +11,7 @@ var apiCall = require('./apiCall');
 let meditation = {};
 
 meditation.get = function(headers){
+	console.log("base url ", apiCall.baseUrl);
 	const options = {
 		uri: apiCall.baseUrl + 'api/v3/meditations/1',	
 		headers: apiCall.parseHeaders(headers),
