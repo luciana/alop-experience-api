@@ -12,7 +12,7 @@ let workout = {};
 
 workout.get = function(headers){
 	const options = {
-		uri: apiCall.baseUrl +"api/v3/workouts/recommendations?limit=3&status=active&duration=1,2,3",	
+		uri: apiCall.baseUrl +"api/v3/workouts/recommendations?limit=4&status=active&duration=1,2,3",	
 		headers: apiCall.parseHeaders(headers),
         json: true
     };

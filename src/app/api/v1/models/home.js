@@ -36,8 +36,12 @@ class home {
                 })
             });
 
-        const w = workoutService.get(req.headers)
-            .map((data) => ({              
+        const wl = Observable.of({
+                     workoutLabel: "Classes selected for you today: "
+                })
+
+        const w = workoutService.get(req.headers)            
+            .map((data) => ({           
                 workouts: workoutMapping.transform(data)
             })).catch((error) => {
                 return Observable.of({
@@ -63,7 +67,7 @@ class home {
                     })
                 });
 
-		return Observable.concat(a, Observable.forkJoin(w,a,u).concatMap(results => Observable.from(results)));
+		return Observable.concat(m, Observable.forkJoin(w,wl,a,u).concatMap(results => Observable.from(results)));
     }
 }
 module.exports = new home();
