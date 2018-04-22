@@ -10,7 +10,7 @@
 var apiCall = require('./apiCall');
 let favorite = {};
 
-favorite.get = function(headers){	
+favorite.get = function(headers){
 	const options = {
 		uri: apiCall.baseUrl + 'api/v3/workouts/favorites',	
 		headers: apiCall.parseHeaders(headers),
