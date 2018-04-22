@@ -1,6 +1,6 @@
 /**
  * Business API Service Call
- * Meditation data
+ * Favorites data
  *
  *
  */
@@ -8,11 +8,11 @@
 'use strict'
 
 var apiCall = require('./apiCall');
-let meditation = {};
+let favorite = {};
 
-meditation.get = function(headers){	
+favorite.get = function(headers){	
 	const options = {
-		uri: apiCall.baseUrl + 'api/v3/meditations/1',	
+		uri: apiCall.baseUrl + 'api/v3/workouts/favorites',	
 		headers: apiCall.parseHeaders(headers),
         json: true
     };
@@ -20,4 +20,4 @@ meditation.get = function(headers){
 	return apiCall.get(options);
 };
 
-module.exports = meditation;
+module.exports = favorite;

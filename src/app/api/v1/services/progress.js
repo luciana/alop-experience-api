@@ -1,6 +1,6 @@
 /**
  * Business API Service Call
- * Meditation data
+ * Progress data
  *
  *
  */
@@ -8,11 +8,11 @@
 'use strict'
 
 var apiCall = require('./apiCall');
-let meditation = {};
+let progress = {};
 
-meditation.get = function(headers){	
+progress.get = function(headers){
 	const options = {
-		uri: apiCall.baseUrl + 'api/v3/meditations/1',	
+		uri: apiCall.baseUrl +"api/v3/progresss",	
 		headers: apiCall.parseHeaders(headers),
         json: true
     };
@@ -20,4 +20,4 @@ meditation.get = function(headers){
 	return apiCall.get(options);
 };
 
-module.exports = meditation;
+module.exports = progress;

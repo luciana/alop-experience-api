@@ -30,6 +30,7 @@ class mappings {
         return data.slice(0,limit).map((d) => {
             var result = {};
             result.activity_id = d.id;
+            result.progress = 100;
             result.workout_id = d.workout.id;
             result.workout_taken_on = d.created_at;
             result.workout_title = d.workout.title;
@@ -51,6 +52,7 @@ class mappings {
             var result = {};
             result.activity_id = d.id;
             result.workout_id = d.workout.id;
+            result.progress = 100;
             result.workout_taken_on = d.created_at;
             result.workout_title = d.workout.title;
             result.workout_audio_time = d.workout.audio_time;
@@ -111,8 +113,8 @@ class activity {
         result.minutes_taken_this_week = m.get_minutes_taken_this_week(data);
         result.classes_taken_this_month = m.get_classes_taken_this_month(data);
         result.minutes_taken_this_month = m.get_minutes_taken_this_month(data);
-        result.classes_taken_this_year = m.get_classes_taken_this_year(data);;
-        result.minutes_taken_this_year = m.get_minutes_taken_this_year(data);;
+        result.classes_taken_this_year = m.get_classes_taken_this_year(data);
+        result.minutes_taken_this_year = m.get_minutes_taken_this_year(data);
         result.recent_activities = m.recent_activities(4,data);  
         result.monthly_activities = m.monthly_activities(data);      
         return result;
