@@ -9,6 +9,4 @@ app.use(bodyParser.json());
 
 app.use('/api/v1', require('./api/v1/routers/home'));
 
-
-
 module.exports = app;
