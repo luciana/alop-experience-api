@@ -10,8 +10,7 @@
 
 class user {
     transform(data){
-        var result = {};
-        console.log("badge url path", data.badge_image);
+        var result = {};       
         result.id = data.id;
         result.name = data.name;
         result.email = data.email;
