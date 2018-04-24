@@ -38,7 +38,7 @@ router.get('/home', (req, res) => {
                         res.json({ message: 'Error Message: ' + error });
                     },
                     () => {         
-                        client.setex(REDIS_HOME_CACHE, 60, JSON.stringify(account));
+                        client.setex(REDIS_HOME_CACHE, 600, JSON.stringify(account));
                         res.status(200);                        
                         res.json(account);
                     }
