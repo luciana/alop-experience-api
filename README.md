@@ -43,3 +43,11 @@ docker exec -it <4 digits of container id> /bin/bash
 # Test the API on local Docker container
 $ curl -v -X GET "http://localhost:3000/api/v1/home" -H "Authorization: Bearer xxx" -H "Accept: application/json" -H "Content-type: application/json" 
 
+# Start Redis Server
+
+This APU uses redis is used for caching purposes. To use this api locally you need Redis server started
+
+redis-server
+
+
+
