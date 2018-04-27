@@ -19,7 +19,7 @@ router.use((req, res, next) => {
     // do logging
     next();
 });
-router.get('/home', (req, res) => {
+router.get('/home', (req, res, next) => {
 	   var account = {};
         client.get(REDIS_HOME_CACHE, (error, result) => {
             if(result){
