@@ -16,9 +16,6 @@ workout.get = function(headers){
 		headers: apiCall.parseHeaders(headers),
         json: true
     };
-
-
 	return apiCall.get(options);
 };
-
 module.exports = workout;

@@ -16,9 +16,7 @@ class apiCall {
 	constructor(){
 		this.api_token = configModule.get('api_token');
 		this.baseUrl = configModule.get('url');
-	}
-
-	
+	}	
 	parseHeaders(h){	
 		if (h['host']){
 			delete h['host'];
@@ -28,16 +26,29 @@ class apiCall {
 		h['content-type'] = 'application/json';		
 		return h;
 	};
-	get(options){	
-		//console.log(options);
-		return Observable.create( observer  => {		
+	get(options){
+		return Observable.create( observer  => {
 			request.get(options, (err, resp, body) => {
+				var value = body;			
+				if (resp.statusCode > 400){
+					value = {"statusCode": resp.statusCode, 
+							 "statusMessage": resp.statusMessage,
+							 "headers": resp.headers,
+							 "request": resp.request.uri};
+				}
+				observer.next(value);
+				observer.complete();
+				observer.error(err);				
+			});
+		})
+	};
+
+	set(options, input){
+		return Observable.create( observer  => {
+			request.post(options, (err, resp, body) => {
 				observer.next(body);
 				observer.complete();
-				observer.error((error) => {
-					resp: "error processing response"
-					console.log(resp, error);
-				})
+				observer.error(err);
 				
 			})
 		});

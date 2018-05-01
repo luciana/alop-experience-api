@@ -12,6 +12,7 @@ var router = require('express').Router(),
     client = require('../models/client');
 
 const REDIS_HOME_CACHE = "alop-adapter-home";
+const REDIS_HOME_CACHE_TIME = 6;
 
 router.use((req, res, next) => {
     // access the req.params object
@@ -23,28 +24,32 @@ router.get('/home', (req, res, next) => {
 	   var account = {};
         client.get(REDIS_HOME_CACHE, (error, result) => {
             if(result){
-                console.log("collected data from redis cache");
                 res.status(200);
                 res.json(JSON.parse(result));
             } else {
-                console.log("collected data from api directly");
                 home.getAccount(req, res)
                 .subscribe(
-                    (value) => {            
-                        account = Object.assign(value, account);
+                    (value) => {
+                        try{                           
+                            account = Object.assign(value, account);
+                        }catch(error){
+                             let msg = { message: 'Account Subscriber Error Message: ' + error };
+                             res.status(500);
+                             res.json(msg);
+                        }                        
                     },
-                    (error) => {
+                    (error) => {                        
+                        let msg = { message: 'Subscriber Error Message: ' + error };
                         res.status(500);
-                        res.json({ message: 'Error Message: ' + error });
+                        res.json(msg);
                     },
                     () => {         
-                        client.setex(REDIS_HOME_CACHE, 600, JSON.stringify(account));
+                        client.setex(REDIS_HOME_CACHE, REDIS_HOME_CACHE_TIME, JSON.stringify(account));
                         res.status(200);                        
                         res.json(account);
                     }
                 );
-                }
-
+            }
         });
 
     	
