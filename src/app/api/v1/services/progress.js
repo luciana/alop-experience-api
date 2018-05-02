@@ -14,7 +14,8 @@ progress.get = function(headers){
 	const options = {
 		uri: apiCall.baseUrl +"api/v3/progresss",	
 		headers: apiCall.parseHeaders(headers),
-        json: true
+        json: true,
+        timeout: 5000
     };
 
 	return apiCall.get(options);

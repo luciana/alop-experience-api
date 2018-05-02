@@ -32,7 +32,7 @@ class home {
     getAccount(req, res){
     	const u = userService.get(req.headers)  
                 .map((data) => {                    
-                    if (data.statusCode > 400){
+                    if (data.statusCode && data.statusCode > 400){
                         loggingService.logError(data, "User Service API");
                     }
                     return data
@@ -50,8 +50,8 @@ class home {
                 });
 
         const w = workoutService.get(req.headers)
-                    .map((data) => {
-                        if (data.statusCode > 400){
+                    .map((data) => {                       
+                        if (!data || data.statusCode > 400){                             
                             loggingService.logError(data, "Workout Service API");
                         }                                
                         return data
@@ -65,6 +65,12 @@ class home {
                     });
 
         const a = trackingService.get(req.headers)
+            .map((data) => {                       
+                        if (!data || data.statusCode > 400){                             
+                            loggingService.logError(data, "Tracking Service API");
+                        }                                
+                        return data
+            })
             .map((data) => ({
                 activities: activityMapping.transform(data)
             })).catch((error) => {
@@ -74,6 +80,12 @@ class home {
             });
 
         const f = favoriteService.get(req.headers)
+            .map((data) => {                       
+                        if (!data || data.statusCode > 400){                             
+                            loggingService.logError(data, "Favorite Service API");
+                        }                                
+                        return data
+                    })
             .map((data) => ({
                 favorites: favoriteMapping.transform(data)
             })).catch((error) => {
@@ -83,6 +95,12 @@ class home {
             });
 
         const m = meditationService.get(req.headers)
+            .map((data) => {                       
+                if (!data || data.statusCode > 400){                             
+                    loggingService.logError(data, "Meditation Service API");
+                }                                
+                return data
+                    })
             .map((data) => ({
                     meditation: meditationMapping.transform(data)
                 })).catch((error) => {
@@ -91,7 +109,7 @@ class home {
                     })
                 });
 
-		return Observable.concat(u, Observable.forkJoin(wl,w).concatMap(results => Observable.from(results)));
+		return Observable.concat(m, Observable.forkJoin(f, a, wl,w,u).concatMap(results => Observable.from(results)));
     }
 }
 module.exports = new home();

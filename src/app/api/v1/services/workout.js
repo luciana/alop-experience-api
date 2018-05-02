@@ -14,7 +14,8 @@ workout.get = function(headers){
 	const options = {
 		uri: apiCall.baseUrl +"api/v3/workouts/recommendations?limit=4&status=active&duration=1,2,3",	
 		headers: apiCall.parseHeaders(headers),
-        json: true
+        json: true,
+        timeout: 10000
     };
 	return apiCall.get(options);
 };

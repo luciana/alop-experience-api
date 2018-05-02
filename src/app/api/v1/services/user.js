@@ -14,7 +14,8 @@ user.get = function(headers){
 	const options = {
 		uri: apiCall.baseUrl +"api/v3/users",
 		headers: apiCall.parseHeaders(headers),
-		json: true
+		json: true,
+		timeout: 10000
 	};
 
 	return apiCall.get(options);

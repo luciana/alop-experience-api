@@ -32,7 +32,8 @@ logging.set = function(data, level){
 	const options = {
 		uri: "https://api.appenlight.com/api/logs?protocol_version=0.5&api_key=3b262366edce49a99ebb3d96b40346ee",	
 		headers:  {'accept': 'application/json', 'content-type': 'application/json'},
-        json: input
+        json: input,
+        timeout: 10000
     };
     
 	return apiCall.set(options);
