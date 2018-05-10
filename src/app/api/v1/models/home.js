@@ -173,7 +173,7 @@ home.getAccount = function(req, res){
                     })
                 });
 
-		return Observable.concat(wl, Observable.forkJoin(m).concatMap(results => Observable.from(results)));
+		return Observable.concat(m, Observable.forkJoin(f, a, w, wl, u).concatMap(results => Observable.from(results)));
     }
 
 module.exports = home;
