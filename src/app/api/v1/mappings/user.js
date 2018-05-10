@@ -11,8 +11,16 @@
 class user {
     transform(data){       
         var result = {};       
-        let defaultSubs = [{"id":0, "plan_id":1, "status": "", "active_until": "", "type": "FREE", "plan_name":""}];
-        let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge1.png';
+        //let defaultSubs = [{"id":0, "plan_id":1, "status": "", "active_until": "", "type": "FREE", "plan_name":""}];
+        let defaultSubs =  [{
+            "id": 0,
+            "plan_id": 1,
+            "status": "active",
+            "active_until": "",
+            "type": "TRIAL",
+            "plan_name": "Free"
+        }];
+        let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
         result.id = data.id;
         result.name = data.name || "Hello";
         result.email = data.email || "";
@@ -20,7 +28,7 @@ class user {
         result.created_at = data.created_at;
         result.location = data.location || "";
         result.subscriptions = data.subscriptions || defaultSubs;
-        result.badge_text = data.badge_text || 'Up and Over';
+        result.badge_text = data.badge_text || 'Newbie Badge';
         result.badge_image = data.badge_image || defaultBadgeImage;
         result.favorites_count = data.favorites_count || 0;
         result.custom_class_count = data.custom_class_count || 0;

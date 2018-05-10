@@ -1,9 +1,19 @@
 /**
- * Feature API Model
- *
- *
- *
- */
+ Provide Api for Home
+
+  GET /api/v1/home
+  @header
+         Authorization: Bearer {token}
+  @optionalQueryParameters
+         param1 {String} - description
+
+ Possible HttpStatusCode
+    500 - server error
+    200 - successfull request
+
+
+**/
+
 
 'use strict'
 
@@ -97,9 +107,9 @@ home.getAccount = function(req, res){
 
         const w = workoutService.get(req.headers)
                     .map((data) => {                       
-                        if (!data || data.statusCode > 400){                           
+                        if (!data || data.statusCode > 400){                    
                             home.hasError = true;
-                            loggingService.logError(data, "Workout Service API");          
+                            loggingService.logError(data, "Workout Service API");
                         }                                
                         return data
                     })
@@ -163,7 +173,7 @@ home.getAccount = function(req, res){
                     })
                 });
 
-		return Observable.concat(m, Observable.forkJoin(f, a, wl,w,u).concatMap(results => Observable.from(results)));
+		return Observable.concat(wl, Observable.forkJoin(m).concatMap(results => Observable.from(results)));
     }
 
 module.exports = home;

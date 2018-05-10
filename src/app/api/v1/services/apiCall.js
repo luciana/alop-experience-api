@@ -29,7 +29,7 @@ class apiCall {
 	get(options){
 		return Observable.create( observer  => {
 			request.get(options, (err, resp, body) => {
-				var value = body;					
+				var value = body;				
 				if (typeof body === 'undefined' || !body){
 					value = {"statusCode": 500, 
 							 "statusMessage": 'Timeout error - no body returned',

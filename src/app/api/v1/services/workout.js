@@ -19,4 +19,13 @@ workout.get = function(headers){
     };
 	return apiCall.get(options);
 };
+workout.getAll = function(headers){
+	const options = {
+		uri: apiCall.baseUrl +"api/v1/workouts?status=active&page=1&limit=101",	
+		headers: apiCall.parseHeaders(headers),
+        json: true,
+        timeout: 100000
+    };
+	return apiCall.get(options);
+};
 module.exports = workout;
