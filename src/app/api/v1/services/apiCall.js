@@ -29,25 +29,27 @@ class apiCall {
 	get(options){
 		return Observable.create( observer  => {
 			request.get(options, (err, resp, body) => {
-				var value = body;				
 				if (typeof body === 'undefined' || !body){
-					value = {"statusCode": 500, 
+						let errorValue = {"statusCode": 500, 
 							 "statusMessage": 'Timeout error - no body returned',
 							 "headers": "",
 							 "request": options.uri,
-							 "error": err};
-					console.log("ERROR", value);
-				}else if (resp.statusCode > 400){					
-					value = {"statusCode": resp.statusCode, 
-							 "statusMessage": resp.statusMessage,
-							 "headers": resp.headers,
-							 "request": resp.request.uri,
 							 "error": ""};
-					console.log("ERROR", value);
-				}
-				observer.next(value);
-				observer.complete();
-				observer.error(err);				
+						observer.error(errorValue);
+				} else if(resp.statusCode === 200) {
+					observer.next( body );
+					observer.complete();
+				} else {
+					let errorValue = err;
+					if (resp.statusCode > 400){					
+						errorValue = {"statusCode": resp.statusCode, 
+								 "statusMessage": resp.statusMessage + " and error ",
+								 "headers": resp.headers,
+								 "request": resp.request.uri,
+								 "error": errorValue};					
+					}
+					observer.error(errorValue);
+				}	
 			});
 		})
 	};

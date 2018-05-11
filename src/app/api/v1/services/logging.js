@@ -20,12 +20,13 @@ let logging = {};
 const LOGGING_NAMESPACE = "alop-adapter-home.heroku";
 
 
-logging.set = function(data, level){
+logging.set = function(data, id, level){
 	const input = [{ "log_level": level || "ERROR", //"WARNING" || ERROR || INFO,
 						"message": JSON.stringify(data) || "there was a problem but message not extracted",
 						"namespace": LOGGING_NAMESPACE, 
 						"permanent": false,		
-						"server": configModule.host						
+						"server": configModule.host,
+						"request_id": id					
 						//"tags": [["tag1","value"], ["tag2", 5]]
 					}];
 
@@ -39,9 +40,9 @@ logging.set = function(data, level){
 	return apiCall.set(options);
 };
 
-logging.logError = function(error, label){
+logging.logError = function(error, label, id, level){
 	let issue = label + " Error: " + JSON.stringify(error);
-    this.set({message: issue}).subscribe((value) =>{
+    this.set({message: issue}, id, level).subscribe((value) =>{
             console.log(label + " Logging Error ", value + " with issue " + issue);
         });
 };

@@ -25,7 +25,8 @@ router.get('/likes', (req, res, next) => {
        var likes = {};
 	   //hasError= false;
        const a = progressService.get(req.headers)
-            .map((data) => {
+            .do((d) => console.log("DO", d))
+            .map((data) => { //may want to use a side-effect operator do/tap
                         if (!data || data.statusCode > 400){
                             //hasError = true;                      
                             loggingService.logError(data, "Progress All Service API");
