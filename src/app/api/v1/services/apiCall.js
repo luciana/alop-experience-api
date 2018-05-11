@@ -14,7 +14,7 @@ var configModule = require('config');
 class apiCall {
 
 	constructor(){
-		this.api_token = configModule.get('api_token');
+		this.api_token = "MPP-Allow-API-Call";
 		this.baseUrl = configModule.get('url');
 	}	
 	parseHeaders(h){	

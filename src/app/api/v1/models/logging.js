@@ -6,16 +6,20 @@
  */
 
 'use strict'
-const loggingService = require('../services/logging');
+const loggingService = require('../services/logging'),
+		configModule = require('config');
 const logging = {};
 
-logging.logWithLabel = function(label, data, id, level = "ERROR"){
-				try{
-					//if (!data || data.statusCode > 400){
+logging.logWithLabel = function(label, data, id, level){
+				try{					
+					let logEntry = label + " " + level +": " + JSON.stringify(data);
+					console.log("Experince API Logging with Label ", logEntry);
+					if (configModule.get('logging')){
 						loggingService.logError(data, label, id, level);
-					//}	
+					}
 				}catch(e){
-					console.log("error while logging an error on ", label + e);
+					let logEntry = label + " " + level +": " + e;
+					console.log("Experince API Logging with Label catch exception ", logEntry);
 				}
 			}
 

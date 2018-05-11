@@ -15,7 +15,7 @@ favorite.get = function(headers){
 		uri: apiCall.baseUrl + 'api/v3/workouts/favorites',	
 		headers: apiCall.parseHeaders(headers),
         json: true,
-        timeout: 4
+        timeout: 4000
     };
 
 	return apiCall.get(options);

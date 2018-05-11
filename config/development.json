@@ -1,6 +1,5 @@
 {
-  "api_token": "MPP-Allow-API-Call",
   "url": "http://alop.herokuapp.com/",
-  "appenlight_public_key": "3b262366edce49a99ebb3d96b40346ee",
-  "host": "alop-adapter-api.herokuapp.com"
+  "host": "alop-adapter-api.herokuapp.com",
+  "logging": true
 }

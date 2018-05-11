@@ -19,6 +19,7 @@
 
 var Observable = require('rxjs/Observable').Observable,
     client = require('../models/client');
+
 require('rxjs/add/observable/of');
 require('rxjs/add/operator/map');
 require('rxjs/add/observable/forkJoin');
@@ -42,161 +43,162 @@ const favoriteMapping = require('../mappings/favorite');
 const loggingService = require('../services/logging');
 const loggingModel = require('../models/logging');
 
+const REDIS_CACHE_TIME = 100;
+
 const REDIS_HOME_CACHE = "alop-adapter-home";
-const REDIS_HOME_CACHE_TIME = 1000;
-
-
 const REDIS_FAV_CACHE = "alop-adapter-favorites";
+const REDIS_USER_CACHE = "alop-adapter-user";
+const REDIS_WORKOUT_CACHE = "alop-adapter-workout";
+const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
+const REDIS_MEDITIONAT_CACHE = "alop-adapter-meditation";
 
+let home = {};
 
-let home = {
-    hasError: false
-};
+home.validate = (req, res, next) => {
+    //Destructing variables from the header
+    //because user-agent has a hyphen it needs to be converted to a new name to get destructured
+    const { "user-agent": userAgent, authorization } = req.headers;
 
-home.getCachedData$ = (key) => {     
-
-     return Observable.create( observer => {        
-        client.get(key, (error, result) => {
-            if(result){
-                console.log("Log it - cache data retrieved ");
-                loggingModel.logWithLabel("Cache retrieved for  ", key, "123", "INFO");
-                observer.next(JSON.parse(result));
-                observer.complete();
-            }else {
-                console.log("Log it - no cache data to retrieve " , error);
-                loggingModel.logWithLabel("Cache data not available for ", key + error, "123", "WARNING");
-                observer.error(error);
-            }
-        });
-    });
-};
-
-
-home.get = function(req, res, next){
-       var account = {};        
-                home.getAccount(req, res)
-                .subscribe(
-                    (value) => {
-                        try{
-                            //console.log("data from API directly");
-                            account = Object.assign(value, account);
-                        }catch(error){
-                             let msg = { message: 'Account Subscriber Error Message: ' + error };
-                             res.status(500);
-                             res.json(msg);
-                        }                        
-                    },
-                    (error) => {                        
-                        let msg = { message: 'Subscriber Error Message: ' + error };
-                        res.status(500);
-                        res.json(msg);
-                    },
-                    () => {         
-                        client.setex(REDIS_HOME_CACHE, REDIS_HOME_CACHE_TIME, JSON.stringify(account));
-                        res.status(200);                        
-                        res.json(account);
-                    }
-                );
+    try{       
+        let request_id = authorization.slice(-10);
+        next(); //call the next middleware - in this case getHomeData
+    }catch(error){
+        let logEntry = "Invalid /home api request. Verify that you have a valid authentication token." + req.headers;
+        let msg = { message: logEntry };
+        loggingModel.logWithLabel(logEntry, error, "unknown", "ERROR");
+        res.status(500);
+        res.json(msg);
     }
+};
 
-home.getAccount = function(req, res){
+
+home.getHomeData = (req, res, next) => {
+        let account = {};
+        home.getAccount$(req, res)
+        .subscribe(
+            (value) => {
+                try{
+                    account = Object.assign(value, account);
+                }catch(error){
+                    let logEntry = "Home Subscriber Value Error Message: ";
+                    let msg = { message: logEntry + error };
+                    loggingModel.logWithLabel(logEntry, msg, "123", "ERROR");
+                    res.status(500);
+                    res.json(msg);
+                }
+            },
+            (error) => {
+                let logEntry = "Home Subscriber Error Message: ";
+                let msg = { message: logEntry + error };
+                loggingModel.logWithLabel(logEntry, msg, "123", "ERROR");
+                res.status(500);
+                res.json(msg);
+            },
+            () => {
+                client.setex(REDIS_HOME_CACHE, REDIS_CACHE_TIME, JSON.stringify(account));
+                res.status(200);
+                res.json(account);
+            }
+        );
+    }
+home.getAccount$ = (req, res) => {
 
       const f$ = favoriteService.get(req.headers)
-                .catch((error) => {
-                    console.log("API Error - log it with error ");
-                    loggingModel.logWithLabel("Favorite Service API", error, "123");
-                    console.log("API Error - get it from cache");
-                    return home.getCachedData$(REDIS_FAV_CACHE);
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Favorite Service API", error, "123" , "ERROR");
+                    return client.getCachedDataFor$(REDIS_FAV_CACHE);
                 })                
-                .map((data) => {                                            
-                    console.log("favorites succeeded and set the favorite cached data");
-                    client.setex(REDIS_FAV_CACHE, REDIS_HOME_CACHE_TIME, JSON.stringify(data));
+                .map((data) => {                           
+                    client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                     return data;
                 })         
                 .map((data) => favoriteMapping.transform(data))
-                .catch((error) => {
-                    console.log("favorites error return an empty observable ", error);
-                    loggingModel.logWithLabel("Favorite Data Transform", error, "123");
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Favorite Data Transform", error, "123", "ERROR");
                     return Observable.of({
                         favorites: {}
                     })
-                })  
-    	const u = userService.get(req.headers)  
-                .map((data) => {                    
-                    if (data.statusCode && data.statusCode > 400){
-                        home.hasError = true;
-                        loggingService.logError(data, "User Service API");
-                    }
-                    return data
-                })               
-                 .map((data) => ({user: userMapping.transform(data)}))
-                 .catch((error) => {
-                    home.hasError = true;
-                    loggingService.logError(error, "User Service Transform ");
+                });
+
+    	const u$ = userService.get(req.headers)  
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("User Service API", error, "123" , "ERROR");
+                    return client.getCachedDataFor$(REDIS_USER_CACHE);
+                })                
+                .map((data) => {                           
+                    client.setex(REDIS_USER_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    return data;
+                })         
+                .map((data) => userMapping.transform(data))
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("User Data Transform", error, "123", "ERROR");
                     return Observable.of({
-                        user: {}
-                    });
+                        favorites: {}
+                    })
                 });
 
         const wl$ = Observable.of({
                      workoutLabel: "Classes selected for you today: "
                 });
 
-        const w = workoutService.get(req.headers)
-                    .map((data) => {                       
-                        if (!data || data.statusCode > 400){
-                            home.hasError = true;
-                            loggingService.logError(data, "Workout Service API");
-                        }
-                        return data;
+        const w$ = workoutService.get(req.headers)
+                  .catch((error) => {                   
+                    loggingModel.logWithLabel("Workout Service API", error, "123" , "ERROR");
+                    return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);
+                })                
+                .map((data) => {                           
+                    client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    return data;
+                })         
+                .map((data) => workoutMapping.transform(data))
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Workout Data Transform", error, "123", "ERROR");
+                    return Observable.of({
+                        favorites: {}
                     })
-                    .map((data) => ({workout: workoutMapping.transform(data)}))
-                    .catch((error) => {
-                        home.hasError = true;
-                        loggingService.logError(error, "Workout Service Transform");
-                        return Observable.of({
-                            workouts: {}
-                        });
-                    });
+                });
 
-        const a = trackingService.get(req.headers)
-            .map((data) => {                       
-                        if (!data || data.statusCode > 400){       
-                            home.hasError = true;                      
-                            loggingService.logError(data, "Tracking Service API");
-                        }                                
-                        return data
-            })
-            .map((data) => ({
-                activities: activityMapping.transform(data)
-            })).catch((error) => {
-                home.hasError = true;
-                return Observable.of({
-                    activities: {}
-                })
-            });
+        const a$ = trackingService.get(req.headers)
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Activity Service API", error, "123" , "ERROR");
+                    return client.getCachedDataFor$(REDIS_ACTIVITIY_CACHE);
+                })                
+                .map((data) => {                           
+                    client.setex(REDIS_ACTIVITIY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    return data;
+                })         
+                .map((data) => activityMapping.transform(data))
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Activity Data Transform", error, "123", "ERROR");
+                    return Observable.of({
+                        favorites: {}
+                    })
+                });
 
 
          
             
         const m$ = meditationService.get(req.headers)
-                .do((data) => {              //may want to use a side effect operator like do/tap         
-                        if (!data || data.statusCode > 400){            
-                            home.hasError = true;                 
-                            loggingService.logError(data, "Meditation Service API");
-                        }                                
-                        return data
-                    })
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Meditation Service API", error, "123" , "ERROR");
+                    return client.getCachedDataFor$(REDIS_MEDITATION_CACHE);
+                })                
+                .map((data) => {                           
+                    client.setex(REDIS_MEDITATION_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    return data;
+                })         
                 .map((data) => meditationMapping.transform(data))
-                .catch((error) => {
-                    home.hasError = true;
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Meditation Data Transform", error, "123", "ERROR");
                     return Observable.of({
                         favorites: {}
                     })
-                }) 
+                });
 
-		return Observable.concat(wl$, Observable.forkJoin(f$).concatMap(results => Observable.from(results)));
-        //return wl$;
+		return Observable.concat(m$, 
+                                Observable.forkJoin(f$, a$, w$, wl$, u$)
+                                .concatMap(results => Observable.from(results))
+                                );
     }
 
 module.exports = home;

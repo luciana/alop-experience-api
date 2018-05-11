@@ -11,13 +11,12 @@ app.use('/api/v1', require('./api/v1/routers/home'));
 app.use('/api/v1', require('./api/v1/routers/likes'));
 app.use('/api/v1', require('./api/v1/routers/workouts'));
 
+app.use((req, res) => {
+	res.status(404).json({message: "Not found"});
+});
 
-app.use(function(err, req, res, next){
-	console.log("middleware error throw", err);
-	//const error = new Error('Dont know what happend error');
-	//error.status = 500;
-	//next(error);
-	res.status(500).json({message: "Dont know what happend error"});
+app.use((err, req, res, next) => {
+	res.status(500).json({message: "Dont know what happend error: " + err});
 })
 
 module.exports = app;
