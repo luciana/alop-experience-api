@@ -9,7 +9,8 @@
 
 
 class user {
-    transform(data){       
+    transform(data){   
+        let results = {};
         var result = {};       
         //let defaultSubs = [{"id":0, "plan_id":1, "status": "", "active_until": "", "type": "FREE", "plan_name":""}];
         let defaultSubs =  [{
@@ -33,7 +34,8 @@ class user {
         result.favorites_count = data.favorites_count || 0;
         result.custom_class_count = data.custom_class_count || 0;
         result.workout_taken_count = data.workout_taken_count || 0;
-        return result;
+        results.user = result;
+        return results;
     }
 }
 

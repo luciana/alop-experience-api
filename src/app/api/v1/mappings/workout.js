@@ -10,7 +10,8 @@
 
 class workout {
     transform(data){  	   
-		return data.map((item) => {
+    	let results = [];
+		let result = data.map((item) => {
 				var result = {};
 				result.id = item.id;
 				result.title = item.title;
@@ -21,6 +22,8 @@ class workout {
 				result.category = item.category.name;
 				return result;
 		});
+		results.workouts = result;
+		return results;
 
     }
 

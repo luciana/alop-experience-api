@@ -107,7 +107,8 @@ class mappings {
 
 class activity {
     transform(data){
-        var result = {};
+        let results = {};
+        let result = {};
         var m = new mappings();
         result.classes_taken_this_week = m.get_classes_taken_this_week(data);
         result.minutes_taken_this_week = m.get_minutes_taken_this_week(data);
@@ -116,8 +117,9 @@ class activity {
         result.classes_taken_this_year = m.get_classes_taken_this_year(data);
         result.minutes_taken_this_year = m.get_minutes_taken_this_year(data);
         result.recent_activities = m.recent_activities(4,data);  
-        result.monthly_activities = m.monthly_activities(data);      
-        return result;
+        result.monthly_activities = m.monthly_activities(data);   
+        results.activities = result;   
+        return results;
     }
 }
   

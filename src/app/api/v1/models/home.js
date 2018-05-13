@@ -50,7 +50,7 @@ const REDIS_FAV_CACHE = "alop-adapter-favorites";
 const REDIS_USER_CACHE = "alop-adapter-user";
 const REDIS_WORKOUT_CACHE = "alop-adapter-workout";
 const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
-const REDIS_MEDITIONAT_CACHE = "alop-adapter-meditation";
+const REDIS_MEDITATION_CACHE = "alop-adapter-meditation";
 
 let home = {};
 
@@ -77,7 +77,7 @@ home.getHomeData = (req, res, next) => {
         home.getAccount$(req, res)
         .subscribe(
             (value) => {
-                try{
+                try{                   
                     account = Object.assign(value, account);
                 }catch(error){
                     let logEntry = "Home Subscriber Value Error Message: ";
@@ -100,26 +100,10 @@ home.getHomeData = (req, res, next) => {
                 res.json(account);
             }
         );
-    }
+    };
+
 home.getAccount$ = (req, res) => {
-
-      const f$ = favoriteService.get(req.headers)
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Favorite Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_FAV_CACHE);
-                })                
-                .map((data) => {                           
-                    client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                    return data;
-                })         
-                .map((data) => favoriteMapping.transform(data))
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Favorite Data Transform", error, "123", "ERROR");
-                    return Observable.of({
-                        favorites: {}
-                    })
-                });
-
+ 
     	const u$ = userService.get(req.headers)  
                 .catch((error) => {                   
                     loggingModel.logWithLabel("User Service API", error, "123" , "ERROR");
@@ -133,7 +117,7 @@ home.getAccount$ = (req, res) => {
                 .catch((error) => {                   
                     loggingModel.logWithLabel("User Data Transform", error, "123", "ERROR");
                     return Observable.of({
-                        favorites: {}
+                        user: {}
                     })
                 });
 
@@ -154,29 +138,45 @@ home.getAccount$ = (req, res) => {
                 .catch((error) => {                   
                     loggingModel.logWithLabel("Workout Data Transform", error, "123", "ERROR");
                     return Observable.of({
-                        favorites: {}
+                        workouts: {}
                     })
                 });
 
         const a$ = trackingService.get(req.headers)
                 .catch((error) => {                   
                     loggingModel.logWithLabel("Activity Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_ACTIVITIY_CACHE);
+                    return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);
                 })                
                 .map((data) => {                           
-                    client.setex(REDIS_ACTIVITIY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    client.setex(REDIS_ACTIVITY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                     return data;
                 })         
                 .map((data) => activityMapping.transform(data))
                 .catch((error) => {                   
                     loggingModel.logWithLabel("Activity Data Transform", error, "123", "ERROR");
                     return Observable.of({
-                        favorites: {}
+                        activities: {}
                     })
                 });
 
 
-         
+          const f$ = favoriteService.get(req.headers)
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Favorite Service API", error, "123" , "ERROR");
+                    return client.getCachedDataFor$(REDIS_FAV_CACHE);
+                })                
+                .map((data) => {                           
+                    client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    return data;
+                })         
+                .map((data) => favoriteMapping.transform(data))
+                .catch((error) => {                   
+                    loggingModel.logWithLabel("Favorite Data Transform", error, "123", "ERROR");
+                    return Observable.of({
+                        favorites: {}
+                    })
+                });
+
             
         const m$ = meditationService.get(req.headers)
                 .catch((error) => {                   
@@ -186,17 +186,18 @@ home.getAccount$ = (req, res) => {
                 .map((data) => {                           
                     client.setex(REDIS_MEDITATION_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                     return data;
-                })         
+                })               
                 .map((data) => meditationMapping.transform(data))
-                .catch((error) => {                   
+                .catch((error) => {
+                    console.log("here");                  
                     loggingModel.logWithLabel("Meditation Data Transform", error, "123", "ERROR");
                     return Observable.of({
-                        favorites: {}
+                        meditations: {}
                     })
                 });
 
 		return Observable.concat(m$, 
-                                Observable.forkJoin(f$, a$, w$, wl$, u$)
+                                Observable.forkJoin(f$, w$, wl$, a$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
     }
