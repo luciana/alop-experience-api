@@ -1,0 +1,34 @@
+{
+  "name": "alop-adapter-api",
+  "scripts": {
+  },
+  "env": {
+    "NEW_RELIC_LICENSE_KEY": {
+      "required": true
+    },
+    "NEW_RELIC_LOG": {
+      "required": true
+    },
+    "PAPERTRAIL_API_TOKEN": {
+      "required": true
+    },
+    "REDISTOGO_URL": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "newrelic",
+    "papertrail",
+    "redistogo"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
