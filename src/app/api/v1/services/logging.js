@@ -47,6 +47,23 @@ logging.logError = function(error, label, id, level){
         });
 };
 
+logging.logMetrics = (ns) => {
+
+	const input = [{
+					"timestamp": (new Date()).toISOString(),
+				     "namespace": ns,
+				     "server_name": configModule.host,
+				 }];
+
+	const options = {
+		uri: "https://api.appenlight.com/api/general_metrics?protocol_version=0.5&public_api_key=3b262366edce49a99ebb3d96b40346ee",	
+		headers:  {'accept': 'application/json', 'content-type': 'application/json'},
+        json: input,
+        timeout: 10000
+    };
+    
+	return apiCall.set(options);
+};
 
 module.exports = logging;
 

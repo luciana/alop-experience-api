@@ -13,9 +13,6 @@ const router = require('express').Router(),
 	loggingModel = require('../models/logging'),
     client = require('../models/client');
 
-const REDIS_HOME_CACHE = "alop-adapter-home";
-const REDIS_HOME_CACHE_TIME = 100;
-
 router.use((req, res, next) => {
     // access the req.params object
     // make auth checks
