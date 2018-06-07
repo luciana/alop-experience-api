@@ -14,7 +14,8 @@ class mappings {
         return tracking.filter(function (item) {
                     var date = new Date(item.created_at); 
                     return date >= startDate && date <= endDate;   
-        }).length.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
+        }).length
+        //}).length.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
     };
 
     count_minutes_taken_on(startDate, endDate, data){  
