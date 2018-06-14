@@ -22,4 +22,5 @@ router.use((req, res, next) => {
 
 router.get('/home', home.validate, home.getHomeData);
 
+
 module.exports = router;

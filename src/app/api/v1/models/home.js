@@ -122,7 +122,11 @@ home.getAccount$ = (req, res) => {
                 });
 
         const wl$ = Observable.of({
+                     workout_label: "Classes selected for you today: ",
                      workoutLabel: "Classes selected for you today: "
+                });
+        const b$ = Observable.of({
+                     banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"                    
                 });
 
         const w$ = workoutService.get(req.headers)
@@ -197,7 +201,7 @@ home.getAccount$ = (req, res) => {
                 });
 
 		return Observable.concat(m$, 
-                                Observable.forkJoin(f$, w$, wl$, a$, u$)
+                                Observable.forkJoin(f$, w$, wl$, a$, u$, b$)
                                 .concatMap(results => Observable.from(results))
                                 );
     }

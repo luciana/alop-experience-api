@@ -7,6 +7,7 @@ let express = require('express'),
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 app.use('/api/v1', require('./api/v1/routers/home'));
 app.use('/api/v1', require('./api/v1/routers/likes'));
 app.use('/api/v1', require('./api/v1/routers/workouts'));
@@ -18,5 +19,7 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
 	res.status(500).json({message: "Dont know what happend error: " + err});
 })
+
+
 
 module.exports = app;
