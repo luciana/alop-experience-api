@@ -40,7 +40,7 @@ client.getCachedDataFor$ = (key) => {
                 let level = "WARNING";
                 let id = "123";
                 let logEntry = "Client has no cache data for " + key + " with " + level +": for request id " +id + " with error " + error;
-                loggingModel.logWithLabel("Cache data not available for ", key + error, id, level);
+                loggingModel.logWithLabel("Cache data not available for ", key + error, id, level);                
                 observer.error(error);
             }
         });

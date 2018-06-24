@@ -105,23 +105,22 @@ home.getHomeData = (req, res, next) => {
 home.getAccount$ = (req, res) => {
  
     	const u$ = userService.get(req.headers)  
-                .catch((error) => {        
-                    loggingModel.logWithLabel("User Service API", error, "123" , "ERROR");                
-                    if (error.statusCode === 401){                       
+                .catch((error) => {
+                    if (error.statusCode === 401){
+                        loggingModel.logWithLabel("User Service API 401 Return user default", error, "123" , "ERROR");
                         return Observable.of(userMapping.getDefault());
                     }else{
+                         loggingModel.logWithLabel("User Service API Return from cache ", error, "123" , "ERROR");
                         return client.getCachedDataFor$(REDIS_USER_CACHE);
                     }
                 })
                 .do((data) => {           
-                    client.setex(REDIS_USER_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                    
+                    client.setex(REDIS_USER_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                 })                   
                 .map((data) => userMapping.transform(data))
                 .catch((error) => {                   
-                    loggingModel.logWithLabel("User Data Transform", error, "123", "ERROR");
-                    return Observable.of({
-                        user: {}
-                    })
+                    loggingModel.logWithLabel("User Data Transform - Return user default", error, "123", "ERROR");
+                    return Observable.of(userMapping.getDefault());
                 });
 
         const wl$ = Observable.of({
@@ -132,19 +131,17 @@ home.getAccount$ = (req, res) => {
                 });
 
         const w$ = workoutService.get(req.headers)
-                  .catch((error) => {                   
-                    loggingModel.logWithLabel("Workout Service API", error, "123" , "ERROR");                    
-                    return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);                    
+                  .catch((error) => {                                                      
+                        loggingModel.logWithLabel("Workout Service API", error, "123" , "ERROR");                                         
+                        return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);                       
                 })                
                 .do((data) => {                           
                     client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                   
                 })         
                 .map((data) => workoutMapping.transform(data))
                 .catch((error) => {                   
-                    loggingModel.logWithLabel("Workout Data Transform", error, "123", "ERROR");
-                    return Observable.of({
-                        workouts: {}
-                    })
+                    loggingModel.logWithLabel("Workout Data Transform - Return workout default", error, "123", "ERROR");
+                    return Observable.of(workoutMapping.getDefault());
                 });
 
         const a$ = trackingService.get(req.headers)
@@ -190,8 +187,7 @@ home.getAccount$ = (req, res) => {
                     client.setex(REDIS_MEDITATION_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                 })               
                 .map((data) => meditationMapping.transform(data))
-                .catch((error) => {
-                    console.log("here");                  
+                .catch((error) => {                            
                     loggingModel.logWithLabel("Meditation Data Transform", error, "123", "ERROR");
                     return Observable.of({
                         meditations: {}
