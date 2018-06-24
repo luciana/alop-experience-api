@@ -63,10 +63,10 @@ home.validate = (req, res, next) => {
         let request_id = authorization.slice(-10);
         next(); //call the next middleware - in this case getHomeData
     }catch(error){
-        let logEntry = "Invalid /home api request. Verify that you have a valid authentication token." + req.headers;
+        let logEntry = "Invalid /home api request. Verify that you have a valid authentication token.";
         let msg = { message: logEntry };
         loggingModel.logWithLabel(logEntry, error, "unknown", "ERROR");
-        res.status(500);
+        res.status(401);
         res.json(msg);
     }
 };
@@ -77,7 +77,7 @@ home.getHomeData = (req, res, next) => {
         home.getAccount$(req, res)
         .subscribe(
             (value) => {
-                try{                   
+                try{    
                     account = Object.assign(value, account);
                 }catch(error){
                     let logEntry = "Home Subscriber Value Error Message: ";
@@ -105,14 +105,17 @@ home.getHomeData = (req, res, next) => {
 home.getAccount$ = (req, res) => {
  
     	const u$ = userService.get(req.headers)  
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("User Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_USER_CACHE);
-                })                
-                .map((data) => {                           
-                    client.setex(REDIS_USER_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                    return data;
-                })         
+                .catch((error) => {        
+                    loggingModel.logWithLabel("User Service API", error, "123" , "ERROR");                
+                    if (error.statusCode === 401){                       
+                        return Observable.of(userMapping.getDefault());
+                    }else{
+                        return client.getCachedDataFor$(REDIS_USER_CACHE);
+                    }
+                })
+                .do((data) => {           
+                    client.setex(REDIS_USER_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                    
+                })                   
                 .map((data) => userMapping.transform(data))
                 .catch((error) => {                   
                     loggingModel.logWithLabel("User Data Transform", error, "123", "ERROR");
@@ -122,8 +125,7 @@ home.getAccount$ = (req, res) => {
                 });
 
         const wl$ = Observable.of({
-                     workout_label: "Classes selected for you today: ",
-                     workoutLabel: "Classes selected for you today: "
+                     workout_label: "Classes selected for you today: "                     
                 });
         const b$ = Observable.of({
                      banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"                    
@@ -131,12 +133,11 @@ home.getAccount$ = (req, res) => {
 
         const w$ = workoutService.get(req.headers)
                   .catch((error) => {                   
-                    loggingModel.logWithLabel("Workout Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);
+                    loggingModel.logWithLabel("Workout Service API", error, "123" , "ERROR");                    
+                    return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);                    
                 })                
-                .map((data) => {                           
-                    client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                    return data;
+                .do((data) => {                           
+                    client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                   
                 })         
                 .map((data) => workoutMapping.transform(data))
                 .catch((error) => {                   
@@ -149,11 +150,10 @@ home.getAccount$ = (req, res) => {
         const a$ = trackingService.get(req.headers)
                 .catch((error) => {                   
                     loggingModel.logWithLabel("Activity Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);
+                    return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);                    
                 })                
-                .map((data) => {                           
-                    client.setex(REDIS_ACTIVITY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                    return data;
+                .do((data) => {                           
+                    client.setex(REDIS_ACTIVITY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                  
                 })         
                 .map((data) => activityMapping.transform(data))
                 .catch((error) => {                   
@@ -167,11 +167,10 @@ home.getAccount$ = (req, res) => {
           const f$ = favoriteService.get(req.headers)
                 .catch((error) => {                   
                     loggingModel.logWithLabel("Favorite Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_FAV_CACHE);
+                    return client.getCachedDataFor$(REDIS_FAV_CACHE);                    
                 })                
-                .map((data) => {                           
-                    client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                    return data;
+                .do((data) => {                           
+                    client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                  
                 })         
                 .map((data) => favoriteMapping.transform(data))
                 .catch((error) => {                   
@@ -187,9 +186,8 @@ home.getAccount$ = (req, res) => {
                     loggingModel.logWithLabel("Meditation Service API", error, "123" , "ERROR");
                     return client.getCachedDataFor$(REDIS_MEDITATION_CACHE);
                 })                
-                .map((data) => {                           
+                .do((data) => {                           
                     client.setex(REDIS_MEDITATION_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                    return data;
                 })               
                 .map((data) => meditationMapping.transform(data))
                 .catch((error) => {
@@ -201,7 +199,7 @@ home.getAccount$ = (req, res) => {
                 });
 
 		return Observable.concat(m$, 
-                                Observable.forkJoin(f$, w$, wl$, a$, u$, b$)
+                                Observable.forkJoin(f$, a$, b$, wl$, w$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
     }

@@ -20,7 +20,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/home', home.validate, home.getHomeData);
+router.get('/home', home.getHomeData);
 
 
 module.exports = router;
