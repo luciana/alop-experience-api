@@ -8,8 +8,10 @@
 'use strict'
 
 
-class meditation {
-    transform(data){
+let meditation = {};
+
+
+meditation.transform = (data) => {
     	var results = {};    	
     	var result = {};
 
@@ -23,7 +25,10 @@ class meditation {
 		});		
 		results.meditations = result;
 		return results; 
-    }
-}
+};
 
-module.exports = new meditation();
+meditation.getDefault = () => {
+	return JSON.parse('{"meditations":[{"id":1,"title":"Muscle-Tension Release Meditation","duration":"14.25 min","path":""}]}');
+};
+
+module.exports = meditation;

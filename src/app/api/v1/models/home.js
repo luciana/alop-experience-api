@@ -19,7 +19,7 @@
 
 var Observable = require('rxjs/Observable').Observable,
     client = require('../models/client');
-
+var uuid = require('uuid');
 require('rxjs/add/observable/of');
 require('rxjs/add/operator/map');
 require('rxjs/add/observable/forkJoin');
@@ -53,6 +53,7 @@ const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
 const REDIS_MEDITATION_CACHE = "alop-adapter-meditation";
 
 let home = {};
+home.requestID = 0;
 
 home.validate = (req, res, next) => {
     //Destructing variables from the header
@@ -71,6 +72,11 @@ home.validate = (req, res, next) => {
     }
 };
 
+home.trackSession = (req, res, next) =>{
+     home.requestID = uuid.v1();
+     next();
+}
+
 
 home.getHomeData = (req, res, next) => {
         let account = {};
@@ -82,7 +88,7 @@ home.getHomeData = (req, res, next) => {
                 }catch(error){
                     let logEntry = "Home Subscriber Value Error Message: ";
                     let msg = { message: logEntry + error };
-                    loggingModel.logWithLabel(logEntry, msg, "123", "ERROR");
+                    loggingModel.logWithLabel(logEntry, msg, home.requestID, "ERROR");
                     res.status(500);
                     res.json(msg);
                 }
@@ -90,7 +96,7 @@ home.getHomeData = (req, res, next) => {
             (error) => {
                 let logEntry = "Home Subscriber Error Message: ";
                 let msg = { message: logEntry + error };
-                loggingModel.logWithLabel(logEntry, msg, "123", "ERROR");
+                loggingModel.logWithLabel(logEntry, msg, home.requestID, "ERROR");
                 res.status(500);
                 res.json(msg);
             },
@@ -107,10 +113,10 @@ home.getAccount$ = (req, res) => {
     	const u$ = userService.get(req.headers)  
                 .catch((error) => {
                     if (error.statusCode === 401){
-                        loggingModel.logWithLabel("User Service API 401 Return user default", error, "123" , "ERROR");
+                        loggingModel.logWithLabel("User Service API 401 Return user default", error, home.requestID , "ERROR");
                         return Observable.of(userMapping.getDefault());
                     }else{
-                         loggingModel.logWithLabel("User Service API Return from cache ", error, "123" , "ERROR");
+                         loggingModel.logWithLabel("User Service API Return from cache ", error, home.requestID , "ERROR");
                         return client.getCachedDataFor$(REDIS_USER_CACHE);
                     }
                 })
@@ -119,7 +125,7 @@ home.getAccount$ = (req, res) => {
                 })                   
                 .map((data) => userMapping.transform(data))
                 .catch((error) => {                   
-                    loggingModel.logWithLabel("User Data Transform - Return user default", error, "123", "ERROR");
+                    loggingModel.logWithLabel("User Data Transform - Return user default", error, home.requestID, "ERROR");
                     return Observable.of(userMapping.getDefault());
                 });
 
@@ -132,7 +138,7 @@ home.getAccount$ = (req, res) => {
 
         const w$ = workoutService.get(req.headers)
                   .catch((error) => {                                                      
-                        loggingModel.logWithLabel("Workout Service API", error, "123" , "ERROR");                                         
+                        loggingModel.logWithLabel("Workout Service API Return from cache", error, home.requestID , "ERROR");                                         
                         return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);                       
                 })                
                 .do((data) => {                           
@@ -140,21 +146,29 @@ home.getAccount$ = (req, res) => {
                 })         
                 .map((data) => workoutMapping.transform(data))
                 .catch((error) => {                   
-                    loggingModel.logWithLabel("Workout Data Transform - Return workout default", error, "123", "ERROR");
+                    loggingModel.logWithLabel("Workout Data Transform - Return workout default", error, home.requestID, "ERROR");
                     return Observable.of(workoutMapping.getDefault());
                 });
 
         const a$ = trackingService.get(req.headers)
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Activity Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);                    
+                .catch((error) => {   
+                    if (error.statusCode === 401){   
+                        loggingModel.logWithLabel("Activity Service API 401 Return empty default", error, home.requestID , "ERROR");     
+                        return Observable.of({
+                            activities: {}
+                        })             
+                    }else{
+                        loggingModel.logWithLabel("Activity Service API Return from cache", error, home.requestID , "ERROR");
+                        return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);          
+                    }
+                              
                 })                
                 .do((data) => {                           
                     client.setex(REDIS_ACTIVITY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                  
                 })         
                 .map((data) => activityMapping.transform(data))
                 .catch((error) => {                   
-                    loggingModel.logWithLabel("Activity Data Transform", error, "123", "ERROR");
+                    loggingModel.logWithLabel("Activity Data Transform Return empty default", error, home.requestID, "ERROR");
                     return Observable.of({
                         activities: {}
                     })
@@ -162,16 +176,23 @@ home.getAccount$ = (req, res) => {
 
 
           const f$ = favoriteService.get(req.headers)
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Favorite Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_FAV_CACHE);                    
+                .catch((error) => {  
+                    if (error.statusCode === 401){        
+                        loggingModel.logWithLabel("Favorite Service API 401 Return empty default", error, home.requestID , "ERROR");     
+                        return Observable.of({
+                            favorites: {}
+                        })             
+                    }else{                 
+                        loggingModel.logWithLabel("Favorite Service API Return from cache", error, home.requestID , "ERROR");
+                        return client.getCachedDataFor$(REDIS_FAV_CACHE);   
+                    }                 
                 })                
                 .do((data) => {                           
                     client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                  
                 })         
                 .map((data) => favoriteMapping.transform(data))
                 .catch((error) => {                   
-                    loggingModel.logWithLabel("Favorite Data Transform", error, "123", "ERROR");
+                    loggingModel.logWithLabel("Favorite Data Transform Return empty default", error, home.requestID, "ERROR");
                     return Observable.of({
                         favorites: {}
                     })
@@ -179,19 +200,22 @@ home.getAccount$ = (req, res) => {
 
             
         const m$ = meditationService.get(req.headers)
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Meditation Service API", error, "123" , "ERROR");
-                    return client.getCachedDataFor$(REDIS_MEDITATION_CACHE);
+                .catch((error) => {
+                    if (error.statusCode === 401){  
+                        loggingModel.logWithLabel("Meditation Service API 401 Return meditation default", error, home.requestID , "ERROR");           
+                        return Observable.of(meditationMapping.getDefault());            
+                    }else{                  
+                        loggingModel.logWithLabel("Meditation Service API Return from cache", error, home.requestID , "ERROR");
+                        return client.getCachedDataFor$(REDIS_MEDITATION_CACHE);
+                    }
                 })                
                 .do((data) => {                           
                     client.setex(REDIS_MEDITATION_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                 })               
                 .map((data) => meditationMapping.transform(data))
                 .catch((error) => {                            
-                    loggingModel.logWithLabel("Meditation Data Transform", error, "123", "ERROR");
-                    return Observable.of({
-                        meditations: {}
-                    })
+                    loggingModel.logWithLabel("Meditation Data Transform Return meditation default", error, home.requestID, "ERROR");
+                    return Observable.of(meditationMapping.getDefault());
                 });
 
 		return Observable.concat(m$, 
