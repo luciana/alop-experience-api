@@ -27,6 +27,7 @@ require('rxjs/add/operator/mergeMap');
 require('rxjs/add/operator/concatMap');
 require('rxjs/add/observable/from');
 require('rxjs/add/observable/concat');
+require('rxjs/observable/merge');
 require('rxjs/add/operator/catch');
 require('rxjs/operator/do');
 require('rxjs/Rx');
@@ -42,6 +43,7 @@ const favoriteService = require('../services/favorite');
 const favoriteMapping = require('../mappings/favorite');
 const loggingService = require('../services/logging');
 const loggingModel = require('../models/logging');
+const tokenInfoService = require('../services/tokenInfo');
 
 const REDIS_CACHE_TIME = 100;
 
@@ -56,27 +58,55 @@ let home = {};
 home.requestID = 0;
 
 home.validate = (req, res, next) => {
-    //Destructing variables from the header
-    //because user-agent has a hyphen it needs to be converted to a new name to get destructured
-    const { "user-agent": userAgent, authorization } = req.headers;
+        const { authorization } = req.headers;
 
-    try{       
-        let request_id = authorization.slice(-10);
-        next(); //call the next middleware - in this case getHomeData
-    }catch(error){
-        let logEntry = "Invalid /home api request. Verify that you have a valid authentication token.";
-        let msg = { message: logEntry };
-        loggingModel.logWithLabel(logEntry, error, "unknown", "ERROR");
-        res.status(401);
-        res.json(msg);
-    }
+        //Given the authorization token is not provided
+        //Then go the API
+        const e$ = Observable.of(authorization)
+                   .filter(v => !v);
+
+        //Given the authorization token is provided and it is valid
+        //Then go the API
+
+        //Given the authorization token is provided but it is invalid 
+        //Then return 401
+        const o$ = Observable.of(authorization)
+                    .filter(v => v)
+                    .switchMap(() => tokenInfoService.get(req.headers));
+  
+        Observable.merge(e$,o$).subscribe((v) => {
+            console.log("value", v);
+            if ( !v ){ //token is empty
+                console.log("token is empty");
+                next();
+            }else {
+                if (v.statusCode === 401){ //token is invalid   
+                    console.log("token is invalid");
+                    let logEntry = "Unauthorized Request - Invalid Token";
+                    let msg = { message: logEntry };
+                    loggingModel.logWithLabel(logEntry, error, home.requestID, "ERROR");
+                    res.status(401);
+                    res.json(msg);
+                }else{
+                    console.log("token is valid");
+                    next();
+                }
+            }                      
+        },
+        (error) => {                       
+            let logEntry = "Error Validating Request token";
+            let msg = { message: logEntry };
+            loggingModel.logWithLabel(logEntry, error, home.requestID, "ERROR");
+            res.status(401);
+            res.json(msg);
+        },
+        ()=> {});
 };
 
 home.trackSession = (req, res, next) =>{
      home.requestID = uuid.v1();
      next();
-}
-
+};
 
 home.getHomeData = (req, res, next) => {
         let account = {};
