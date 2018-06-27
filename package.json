@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Adapter API for ALOP mobile screen",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha test/**/*.js",
     "start": "NODE_ENV=production pm2 start server.js  --watch --no-daemon",
     "stop": "pm2 kill"
   },
@@ -23,5 +23,10 @@
   },
   "engines": {
     "node": ">=8"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "supertest": "^3.1.0"
   }
 }
