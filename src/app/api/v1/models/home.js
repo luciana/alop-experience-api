@@ -75,20 +75,16 @@ home.validate = (req, res, next) => {
                     .switchMap(() => tokenInfoService.get(req.headers));
   
         Observable.merge(e$,o$).subscribe((v) => {
-            console.log("value", v);
-            if ( !v ){ //token is empty
-                console.log("token is empty");
+            if ( !v ){ //token is empty                
                 next();
             }else {
-                if (v.statusCode === 401){ //token is invalid   
-                    console.log("token is invalid");
+                if (v.statusCode === 401){ //token is invalid                      
                     let logEntry = "Unauthorized Request - Invalid Token";
                     let msg = { message: logEntry };
                     loggingModel.logWithLabel(logEntry, error, home.requestID, "ERROR");
                     res.status(401);
                     res.json(msg);
-                }else{
-                    console.log("token is valid");
+                }else{                    
                     next();
                 }
             }                      

@@ -1,9 +1,9 @@
 {
   "name": "ALOP-Adapter-API",
   "version": "1.0.0",
-  "description": "Adapter API for ALOP mobile screen",
+  "description": "Experience API for ALOP - it transforms and orchestrates API calls to business API to provide the necessary experience data for the mobile UI apps.",
   "scripts": {
-    "test": "NODE_ENV=test mocha test/**/*.js",
+    "test": "NODE_ENV=test mocha src/app/test/*.js",
     "start": "NODE_ENV=production pm2 start server.js  --watch --no-daemon",
     "stop": "pm2 kill"
   },

@@ -16,3 +16,5 @@ server.on('error', function(err){
 	throw err;
 });
 server.timeout = 30000;
+
+module.exports = server;
