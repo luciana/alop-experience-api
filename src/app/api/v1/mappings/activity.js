@@ -106,8 +106,9 @@ class mappings {
 
 }
 
-class activity {
-    transform(data){
+let activity = {};
+
+activity.transform = (data) =>{
         let results = {};
         let result = {};
         var m = new mappings();
@@ -122,7 +123,22 @@ class activity {
         results.activities = result;   
         return results;
     }
-}
+
+activity.getDefault = () => {
+    let results = {};
+    var result = {};  
+    
+    result.classes_taken_this_month = 0;
+    result.classes_taken_this_week = 0;
+    result.classes_taken_this_year = 0;
+    result.minutes_taken_this_month = 0;
+    result.minutes_taken_this_week = 0;
+    result.minutes_taken_this_year = 0;
+    result.recent_activities = [];
+    result.monthly_activities = [];    
+    results.activities = result;
+    return results;
+};
   
 
-module.exports = new activity();
+module.exports = activity;

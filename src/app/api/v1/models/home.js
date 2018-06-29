@@ -180,9 +180,7 @@ home.getAccount$ = (req, res) => {
                 .catch((error) => {   
                     if (error.statusCode === 401){   
                         loggingModel.logWithLabel("Activity Service API 401 Return empty default", error, home.requestID , "ERROR");     
-                        return Observable.of({
-                            activities: {}
-                        })             
+                        return Observable.of(activityMapping.getDefault());            
                     }else{
                         loggingModel.logWithLabel("Activity Service API Return from cache", error, home.requestID , "ERROR");
                         return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);          
@@ -195,9 +193,7 @@ home.getAccount$ = (req, res) => {
                 .map((data) => activityMapping.transform(data))
                 .catch((error) => {                   
                     loggingModel.logWithLabel("Activity Data Transform Return empty default", error, home.requestID, "ERROR");
-                    return Observable.of({
-                        activities: {}
-                    })
+                     return Observable.of(activityMapping.getDefault()); 
                 });
 
 
