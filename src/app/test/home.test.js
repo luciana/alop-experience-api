@@ -5,9 +5,10 @@
  		done();
  	});
 
+
  	describe('GET /home ', () =>{
 
- 		it('returns home default data if token is not sent', (done) => {
+ 		it('should return home default data if token is not sent', (done) => {
  			request.get('/api/v1/home')
  			.set('Accept', 'application/json')
  			.expect('Content-Type', /json/)
@@ -33,7 +34,7 @@
  			})
  		})
 
- 		it('returns real user data if token is sent and token is valid and user is not a paid user', (done) => {
+ 		it('should return real user data if token is sent and token is valid and user is not a paid user', (done) => {
  			request.get('/api/v1/home')
  			.set('Accept', 'application/json')	
  			.set('Authorization', 'Bearer fab6b909db3d24c4a0577894c9d29e6dd83f7c30be4e6e66c68cb31465b4fe0e')
@@ -66,7 +67,7 @@
  			})
  		})
 
- 		it('returns 401 if token is sent and token is invalid', (done) => {
+ 		it('should return 401 if token is sent and token is invalid', (done) => {
  			request.get('/api/v1/home')
  			.set('Accept', 'application/json')	
  			.set('Authorization', 'Bearer xxxxxx')
@@ -78,7 +79,7 @@
  			})
  		})
 
- 		it('returns real user data if token is sent and token is valid and user is a paid user', (done) => {
+ 		it('should return real user data if token is sent and token is valid and user is a paid user', (done) => {
  			request.get('/api/v1/home')
  			.set('Accept', 'application/json')	
  			.set('Authorization', 'Bearer ddd87fb9a543aa0c4d1dd58d55942606dbd5681bfec5311f4077d4b0610380a9')
