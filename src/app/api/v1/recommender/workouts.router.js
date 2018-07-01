@@ -8,10 +8,9 @@
 'use strict'
 
 var router = require('express').Router();
-const progressService = require('../services/progress');
-const trackingService = require('../services/tracking');
-const likesMapping = require('../mappings/likes');
-const loggingService = require('../services/logging');
+const workoutService = require('../shared/services/workout');
+const workoutMapping = require('../shared/mappings/workout');
+const loggingService = require('../shared/services/logging');
 
 router.use((req, res, next) => {
     // access the req.params object
@@ -21,25 +20,23 @@ router.use((req, res, next) => {
 });
 
 
-router.get('/likes', (req, res, next) => {
-       var likes = {};
+router.get('/workouts', (req, res, next) => {
+       var workouts = {};
 	   //hasError= false;
-       const a = progressService.get(req.headers)
-            .do((d) => console.log("DO", d))
-            .map((data) => { //may want to use a side-effect operator do/tap
+       const a = workoutService.getAll(req.headers)
+            .map((data) => {
                         if (!data || data.statusCode > 400){
                             //hasError = true;                      
-                            loggingService.logError(data, "Progress All Service API");
-                        }                
-                        console.log("progress service data", data.length);
+                            loggingService.logError(data, "Workout All Service API");
+                        }                       
                         return data
             })
             .map((data) => ({
-                likes: likesMapping.transform(data)
+                workouts: workoutMapping.transformLimited(data)
             })).catch((error) => {
                 //hasError = true;
                 return Observable.of({
-                    likes: {}
+                    workouts: {}
                 })
             });
 
@@ -48,24 +45,24 @@ router.get('/likes', (req, res, next) => {
                 .subscribe(
                     (value) => {
                         try{
-                            likes = Object.assign(value, likes);
+                            workouts = Object.assign(value, workouts);
                         }catch(error){
                             //hasError = true;
-                             let msg = { message: 'Progress Subscriber Error Message: ' + error };
-                             loggingService.logError(msg, "Progress Subscriber Error Message: Progress");
+                             let msg = { message: 'Workout Subscriber Error Message: ' + error };
+                             loggingService.logError(msg, "Workout Subscriber Error Message: Workout");
                              res.status(500);
                              res.json(msg);
                         }                        
                     },
                     (error) => {     
                         //hasError = true;                   
-                        let msg = { message: 'Progress Subscriber Error Message: ' + error };
+                        let msg = { message: 'Workout Subscriber Error Message: ' + error };
                         res.status(500);
                         res.json(msg);
                     },
                     () => {                               
                         res.status(200);
-                        res.json(likes);
+                        res.json(workouts);
                     }
                 );
     });

@@ -8,10 +8,10 @@
 'use strict'
 
 const router = require('express').Router(),
-    home = require('../models/home'),
-    loggingService = require('../services/logging'),
-	loggingModel = require('../models/logging'),
-    client = require('../models/client');
+    home = require('./home.model'),
+    loggingService = require('../shared/services/logging'),
+	loggingModel = require('../shared/models/logging'),
+    client = require('../shared/models/client');
 
 router.use((req, res, next) => {
     // access the req.params object
