@@ -11,7 +11,9 @@ const router = require('express').Router(),
     home = require('./home.model'),
     loggingService = require('../shared/services/logging'),
 	loggingModel = require('../shared/models/logging'),
-    client = require('../shared/models/client');
+    client = require('../shared/models/client'),
+    tracker = require('./home.middleware.tracker'),
+    validator = require('./home.middleware.validator');
 
 router.use((req, res, next) => {
     // access the req.params object
@@ -20,7 +22,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/home', home.validate, home.trackSession, home.getHomeData);
+router.get('/home', tracker.trackSession, validator.validate, home.getHomeData);
 
 
 module.exports = router;
