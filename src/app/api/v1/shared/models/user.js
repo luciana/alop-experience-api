@@ -18,18 +18,6 @@ const userService = require('../services/user'),
         tracker = require('../../home/home.middleware.tracker'),
         tokenInfoService = require('../services/tokenInfo');
 
-
-// require('rxjs/add/observable/of');
-// require('rxjs/add/operator/map');
-// require('rxjs/add/observable/forkJoin');
-// require('rxjs/add/operator/concatMap');
-// require('rxjs/add/observable/from');
-// require('rxjs/add/observable/concat');
-// require('rxjs/observable/merge');
-// require('rxjs/add/operator/catch');
-// require('rxjs/operator/do');
-
-
 const REDIS_CACHE_TIME = 100;
 const REDIS_USER_CACHE = "alop-adapter-user";
 
