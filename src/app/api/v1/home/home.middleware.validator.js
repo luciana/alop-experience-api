@@ -8,14 +8,14 @@
 const Observable = require('rxjs/Observable').Observable,
         loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
-        home = require('./home.model'),
+        user = require('../shared/models/user'),
         tracker = require('./home.middleware.tracker');
 
 let validator = {};
 
 validator.validate = (req, res, next) => {
         
-         home.validateToken$(req, res)
+         user.validateToken$(req, res)
             .subscribe((v) => {
             if ( !v ){ //token is empty                
                 next();
