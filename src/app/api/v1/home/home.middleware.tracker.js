@@ -1,10 +1,7 @@
 /**
  Middleware for /home api calls
 
- * validates the incoming requests if the token is provided and is valid
  * stores unique request Id to track aa event
-
-
 
 **/
 

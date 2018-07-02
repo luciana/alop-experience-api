@@ -19,8 +19,7 @@
 'use strict'
 
 const Observable = require('rxjs/Observable').Observable,
-        client = require('../shared/models/client'),
-        uuid = require('uuid');
+        client = require('../shared/models/client');
 
 const userService = require('../shared/services/user'),
         userMapping = require('../shared/mappings/user'),
@@ -34,8 +33,8 @@ const userService = require('../shared/services/user'),
         favoriteMapping = require('../shared/mappings/favorite'),
         loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
-        tokenInfoService = require('../shared/services/tokenInfo'),
-        tracker = require('./home.middleware.tracker');
+        tracker = require('./home.middleware.tracker'),
+        tokenInfoService = require('../shared/services/tokenInfo');
 
 
 require('rxjs/add/observable/of');
@@ -51,7 +50,6 @@ require('rxjs/operator/do');
 require('rxjs/Rx');
 
 const REDIS_CACHE_TIME = 100;
-const REDIS_HOME_CACHE = "alop-adapter-home";
 const REDIS_FAV_CACHE = "alop-adapter-favorites";
 const REDIS_USER_CACHE = "alop-adapter-user";
 const REDIS_WORKOUT_CACHE = "alop-adapter-workout";
@@ -59,36 +57,6 @@ const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
 const REDIS_MEDITATION_CACHE = "alop-adapter-meditation";
 
 let home = {};
-
-home.getHomeData = (req, res, next) => {
-        let account = {};
-        home.getAccount$(req, res)
-        .subscribe(
-            (value) => {
-                try{    
-                    account = Object.assign(value, account);
-                }catch(error){
-                    let logEntry = "Home Subscriber Value Error Message: ";
-                    let msg = { message: logEntry + error };
-                    loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
-                    res.status(500);
-                    res.json(msg);
-                }
-            },
-            (error) => {
-                let logEntry = "Home Subscriber Error Message: ";
-                let msg = { message: logEntry + error };
-                loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
-                res.status(500);
-                res.json(msg);
-            },
-            () => {
-                client.setex(REDIS_HOME_CACHE, REDIS_CACHE_TIME, JSON.stringify(account));
-                res.status(200);
-                res.json(account);
-            }
-        );
-    };
 
 home.getAccount$ = (req, res) => {
  
@@ -201,5 +169,29 @@ home.getAccount$ = (req, res) => {
                                 .concatMap(results => Observable.from(results))
                                 );
     }
+
+home.validateToken$ = (req, res)  => {
+
+        const { authorization } = req.headers;
+      
+        //Given the authorization token is not provided
+        //Then go the API
+        const e$ = Observable.of(authorization)
+                   .filter(v => !v);
+
+        //Given the authorization token is provided and it is valid
+        //Then go the API
+
+        //Given the authorization token is provided but it is invalid 
+        //Then return 401
+        const o$ = Observable.of(authorization)
+                    .filter(v => v)
+                    .switchMap(() => tokenInfoService.get(req.headers))
+                    .catch((error) => {                            
+                        loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");                       
+                    });
+  
+        return Observable.merge(e$,o$);
+}
 
 module.exports = home;
