@@ -15,7 +15,7 @@ const meditationService = require('../services/meditation'),
         meditationMapping = require('../mappings/meditation'),
         loggingService = require('../services/logging'),
         loggingModel = require('../models/logging'),
-        tracker = require('../../home/home.middleware.tracker');
+        tracker = require('../middleware/tracker');
 
 const REDIS_CACHE_TIME = 100;
 const REDIS_MEDITATION_CACHE = "alop-adapter-meditation";

@@ -15,7 +15,7 @@ const userService = require('../services/user'),
         userMapping = require('../mappings/user'),       
         loggingService = require('../services/logging'),
         loggingModel = require('../models/logging'),
-        tracker = require('../../home/home.middleware.tracker'),
+        tracker = require('../middleware/tracker'),
         tokenInfoService = require('../services/tokenInfo');
 
 const REDIS_CACHE_TIME = 100;

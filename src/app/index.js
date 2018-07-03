@@ -7,7 +7,7 @@ let express = require('express'),
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/api/v1', require('./api/v1/home/home.router'));
+app.use('/api/v1', require('./api/v1/home/router'));
 app.use('/api/v1', require('./api/v1/recommender/likes.router'));
 app.use('/api/v1', require('./api/v1/recommender/workouts.router'));
 

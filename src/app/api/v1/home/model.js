@@ -23,7 +23,7 @@ const Observable = require('rxjs/Observable').Observable,
 
 const   loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
-        tracker = require('./home.middleware.tracker'),    
+        tracker = require('../shared/middleware/tracker'),
         user = require('../shared/models/user'),
         workout = require('../shared/models/workout'),
         meditation = require('../shared/models/meditation');

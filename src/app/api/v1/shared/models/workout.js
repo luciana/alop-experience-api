@@ -29,7 +29,7 @@ const workoutService = require('../services/workout'),
     loggingModel = require('../models/logging'),
     favoriteService = require('../services/favorite'),
     favoriteMapping = require('../mappings/favorite'),
-    tracker = require('../../home/home.middleware.tracker');
+    tracker = require('../middleware/tracker');
 
 const REDIS_CACHE_TIME = 100;
 const REDIS_WORKOUT_CACHE = "alop-adapter-workout";

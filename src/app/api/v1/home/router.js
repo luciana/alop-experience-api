@@ -19,9 +19,9 @@
 'use strict'
 
 const router = require('express').Router(),
-    home = require('./home.controller'),
-    tracker = require('./home.middleware.tracker'),
-    validator = require('./home.middleware.validator');
+    home = require('./controller'),
+    tracker = require('../shared/middleware/tracker'),
+    validator = require('../shared/middleware/validator');
 
 router.use((req, res, next) => {
     // access the req.params object

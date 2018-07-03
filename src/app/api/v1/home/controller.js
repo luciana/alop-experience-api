@@ -16,8 +16,8 @@ const Observable = require('rxjs/Observable').Observable,
 
 const loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
-        tracker = require('./home.middleware.tracker'),
-        home = require('./home.model.js');
+        tracker = require('../shared/middleware/tracker'),
+        home = require('./model.js');
 
 const REDIS_CACHE_TIME = 100;
 const REDIS_HOME_CACHE = "alop-adapter-home";

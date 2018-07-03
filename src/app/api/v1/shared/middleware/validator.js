@@ -6,10 +6,10 @@
 **/
 
 const Observable = require('rxjs/Observable').Observable,
-        loggingService = require('../shared/services/logging'),
-        loggingModel = require('../shared/models/logging'),
-        user = require('../shared/models/user'),
-        tracker = require('./home.middleware.tracker');
+        loggingService = require('../services/logging'),
+        loggingModel = require('../models/logging'),
+        user = require('../models/user'),
+        tracker = require('./tracker');
 
 let validator = {};
 
