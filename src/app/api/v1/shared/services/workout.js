@@ -10,7 +10,7 @@
 var apiCall = require('./apiCall');
 let workout = {};
 
-workout.get = function(headers){
+workout.get = (headers) => {
 	const options = {
 		uri: apiCall.baseUrl +"api/v3/workouts/recommendations?limit=4&status=active&duration=1,2,3",	
 		headers: apiCall.parseHeaders(headers),
@@ -19,7 +19,7 @@ workout.get = function(headers){
     };
 	return apiCall.get(options);
 };
-workout.getAll = function(headers){
+workout.getAll = (headers) => {
 	const options = {
 		uri: apiCall.baseUrl +"api/v1/workouts?status=active&page=1&limit=101",	
 		headers: apiCall.parseHeaders(headers),
