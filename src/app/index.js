@@ -2,7 +2,10 @@
 
 let express = require('express'),
     bodyParser = require('body-parser'),
-    app = express();
+    app = express(),
+    compression = require('compression');
+
+app.use(compression());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
