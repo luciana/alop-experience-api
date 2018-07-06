@@ -46,6 +46,10 @@ user.get$ = (req, res) => {
                 });
     }
 
+user.getDefault$ = () =>{
+    return Observable.of(userMapping.getDefault()); 
+};
+
 user.validateToken$ = (req, res)  => {
 
         const { authorization } = req.headers;

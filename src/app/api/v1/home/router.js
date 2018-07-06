@@ -30,7 +30,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/home', tracker.trackSession, validator.validate, home.getHomeData);
+router.get('/home', tracker.trackSession, home.get);
 
 
 module.exports = router;

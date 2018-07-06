@@ -30,22 +30,40 @@ const   loggingService = require('../shared/services/logging'),
 
 let home = {};
 
+home.defaultAccount$ = () =>{ 
+    const u$ = user.getDefault$();
+    const wl$ = workout.getLabel$();
+    const b$ = Observable.of({
+                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"                    
+            });
+    const w$ = workout.getDefault$();
+    const a$ = workout.getDefaultActivities$();
+    const f$ = Observable.of({
+                        favorites: {}
+                    })
+    const m$ = meditation.getDefault$();
+    return Observable.concat(m$, 
+                                Observable.forkJoin(f$, a$, b$, wl$, w$, u$)
+                                .concatMap(results => Observable.from(results))
+                                );
+
+};
+
 home.getAccount$ = (req, res) => {
-    	const u$ = user.get$(req, res);
-        const wl$ = workout.getLabel$();
-        const b$ = Observable.of({
-                     banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"                    
-                });
-        const w$ = workout.get$(req, res);
-        const a$ = workout.getActivities$(req, res);
-        const f$ =  workout.getFavorites$(req, res);
-        const m$ = meditation.get$(req,res);
+  	const u$ = user.get$(req, res);
+    const wl$ = workout.getLabel$();
+    const b$ = Observable.of({
+                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"                    
+            });
+    const w$ = workout.get$(req, res);
+    const a$ = workout.getActivities$(req, res);
+    const f$ = workout.getFavorites$(req, res);
+    const m$ = meditation.get$(req,res);
 
 		return Observable.concat(m$, 
                                 Observable.forkJoin(f$, a$, b$, wl$, w$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
-    }
-
+};
 
 module.exports = home;

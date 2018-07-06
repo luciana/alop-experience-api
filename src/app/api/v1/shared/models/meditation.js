@@ -44,4 +44,9 @@ meditation.get$ = (req, res) => {
                 });
 };
 
+meditation.getDefault$ = () =>{
+    return Observable.of(meditationMapping.getDefault()); 
+};
+
+
 module.exports = meditation;

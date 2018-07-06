@@ -54,6 +54,10 @@ workout.get$ = (req, res) => {
                 });
 };
 
+workout.getDefault$ = () =>{
+    return Observable.of(workoutMapping.getDefault());
+};
+
 workout.getLabel$ = () => {
     return Observable.of({
                  workout_label: "Classes selected for you today: "                     
@@ -105,6 +109,10 @@ workout.getActivities$ = (req, res) =>{
                     loggingModel.logWithLabel("Activity Data Transform Return empty default", error, tracker.requestID, "ERROR");
                      return Observable.of(activityMapping.getDefault()); 
                 });
+};
+
+workout.getDefaultActivities$ = () =>{
+    return Observable.of(activityMapping.getDefault()); 
 };
 
 

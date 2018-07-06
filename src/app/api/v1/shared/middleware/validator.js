@@ -9,7 +9,8 @@ const Observable = require('rxjs/Observable').Observable,
         loggingService = require('../services/logging'),
         loggingModel = require('../models/logging'),
         user = require('../models/user'),
-        tracker = require('./tracker');
+        tracker = require('./tracker'),
+        homeController = require('../../home/controller');
 
 let validator = {};
 
@@ -18,7 +19,7 @@ validator.validate = (req, res, next) => {
          user.validateToken$(req, res)
             .subscribe((v) => {
             if ( !v ){ //token is empty                
-                next();
+               homeController.getDefaultHomeData();
             }else {
                 if (v.statusCode === 401){ //token is invalid                      
                     let logEntry = "Unauthorized Request - Invalid Token";
