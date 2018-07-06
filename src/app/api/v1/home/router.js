@@ -20,8 +20,7 @@
 
 const router = require('express').Router(),
     home = require('./controller'),
-    tracker = require('../shared/middleware/tracker'),
-    validator = require('../shared/middleware/validator');
+    tracker = require('../shared/middleware/tracker');
 
 router.use((req, res, next) => {
     // access the req.params object
