@@ -1,13 +1,15 @@
 
  describe('Home API Route Integration Tests', function(){
 
+ 	this.timeout(1000000); 
+
  	beforeEach((done)=>{
  		done();
  	});
 
 
  	describe('GET /home ', () =>{
- 		this.timeout(100000); 
+ 		
 
  		it('should return workout default if takes longer than 10000ms to get response from workout api', (done) =>{			
 			request.get('/api/v1/home')
