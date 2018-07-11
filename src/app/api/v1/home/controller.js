@@ -12,7 +12,8 @@
 'use strict'
 
 const Observable = require('rxjs/Observable').Observable,
-        client = require('../shared/models/client');
+        client = require('../shared/models/client'),
+        configModule = require('config');
 
 const loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
@@ -20,7 +21,7 @@ const loggingService = require('../shared/services/logging'),
         user = require('../shared/models/user'),
         home = require('./model.js');
 
-const REDIS_CACHE_TIME = 100;
+var REDIS_CACHE_TIME = configModule.get('REDIS_CACHE_TIME');
 const REDIS_HOME_CACHE = "alop-adapter-home";
 
 let homeController = {};

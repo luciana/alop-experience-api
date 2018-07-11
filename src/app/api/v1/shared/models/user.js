@@ -9,7 +9,8 @@
 'use strict'
 require('rxjs/Rx');
 const Observable = require('rxjs/Observable').Observable,
-        client = require('./client');
+        client = require('./client'),
+        configModule = require('config');
 
 const userService = require('../services/user'),
         userMapping = require('../mappings/user'),       
@@ -18,7 +19,7 @@ const userService = require('../services/user'),
         tracker = require('../middleware/tracker'),
         tokenInfoService = require('../services/tokenInfo');
 
-const REDIS_CACHE_TIME = 100;
+
 const REDIS_USER_CACHE = "alop-adapter-user";
 
 
@@ -37,7 +38,7 @@ user.get$ = (req, res) => {
                     }
                 })
                 .do((data) => {           
-                    client.setex(REDIS_USER_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    client.setex(REDIS_USER_CACHE, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                 })                   
                 .map((data) => userMapping.transform(data))
                 .catch((error) => {                   
@@ -47,7 +48,7 @@ user.get$ = (req, res) => {
     }
 
 user.getDefault$ = () =>{
-    return Observable.of(userMapping.getDefault()); 
+    return Observable.of(userMapping.getDefault());
 };
 
 user.validateToken$ = (req, res)  => {

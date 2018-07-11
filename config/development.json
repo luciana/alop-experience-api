@@ -1,5 +1,6 @@
 {
   "url": "http://alop.herokuapp.com/",
-  "host": "alop-adapter-api.herokuapp.com",
-  "logging": true
+  "host": "alop-experience-api.herokuapp.com",
+  "logging": true,
+  "REDIS_CACHE_TIME": 5000
 }

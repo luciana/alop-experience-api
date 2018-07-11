@@ -19,7 +19,8 @@
 'use strict'
 require('rxjs/Rx');
 const Observable = require('rxjs/Observable').Observable,
-        client = require('../models/client');
+        client = require('../models/client'),
+        configModule = require('config');
 
 const workoutService = require('../services/workout'),
     workoutMapping = require('../mappings/workout'),
@@ -31,7 +32,7 @@ const workoutService = require('../services/workout'),
     favoriteMapping = require('../mappings/favorite'),
     tracker = require('../middleware/tracker');
 
-const REDIS_CACHE_TIME = 100;
+const REDIS_CACHE_TIME = configModule.get('REDIS_CACHE_TIME');
 const REDIS_WORKOUT_CACHE = "alop-adapter-workout";
 const REDIS_FAV_CACHE = "alop-adapter-favorites";
 const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
@@ -41,11 +42,11 @@ let workout = {};
 workout.get$ = (req, res) => {
     return workoutService.get(req.headers)
                   .catch((error) => {                                                      
-                        loggingModel.logWithLabel("Workout Service API Return from cache", error, tracker.requestID , "ERROR");                                         
-                        return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);                       
+                        loggingModel.logWithLabel("Workout Service API Return from cache", error, tracker.requestID , "ERROR");
+                        return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);
                 })                
                 .do((data) => {                           
-                    client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                   
+                    client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                 })         
                 .map((data) => workoutMapping.transform(data))
                 .catch((error) => {                   

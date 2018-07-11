@@ -25,7 +25,7 @@ client.on('error', (err)=>{
 
 
 client.getCachedDataFor$ = (key) => {     
-
+    console.log("get data from cache" , key);
      return Observable.create( observer => {
         client.get(key, (error, result) => {
             if(result){

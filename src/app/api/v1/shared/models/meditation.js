@@ -9,7 +9,8 @@
 'use strict'
 require('rxjs/Rx');
 const Observable = require('rxjs/Observable').Observable,
-        client = require('./client');
+        client = require('./client'),
+        configModule = require('config');
 
 const meditationService = require('../services/meditation'),
         meditationMapping = require('../mappings/meditation'),
@@ -17,7 +18,6 @@ const meditationService = require('../services/meditation'),
         loggingModel = require('../models/logging'),
         tracker = require('../middleware/tracker');
 
-const REDIS_CACHE_TIME = 100;
 const REDIS_MEDITATION_CACHE = "alop-adapter-meditation";
 
 let meditation = {};
@@ -35,7 +35,7 @@ meditation.get$ = (req, res) => {
                     }
                 })                
                 .do((data) => {                           
-                    client.setex(REDIS_MEDITATION_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
+                    client.setex(REDIS_MEDITATION_CACHE, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                 })               
                 .map((data) => meditationMapping.transform(data))
                 .catch((error) => {                            
