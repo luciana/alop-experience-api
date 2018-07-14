@@ -28,13 +28,14 @@ meditation.get$ = (req, res) => {
                 .catch((error) => {
                     if (error.statusCode === 401){  
                         loggingModel.logWithLabel("Meditation Service API 401 Return meditation default", error, tracker.requestID , "ERROR");           
-                        return Observable.of(meditationMapping.getDefault());            
+                        return Observable.of(meditationMapping.getDefault());  
                     }else{                  
                         loggingModel.logWithLabel("Meditation Service API Return from cache", error, tracker.requestID , "ERROR");
                         return client.getCachedDataFor$(REDIS_MEDITATION_CACHE);
                     }
                 })                
-                .do((data) => {                           
+                .do((data) => {
+                    console.log("set cache ", REDIS_MEDITATION_CACHE);                   
                     client.setex(REDIS_MEDITATION_CACHE, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                 })               
                 .map((data) => meditationMapping.transform(data))

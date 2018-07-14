@@ -45,7 +45,8 @@ workout.get$ = (req, res) => {
                         loggingModel.logWithLabel("Workout Service API Return from cache", error, tracker.requestID , "ERROR");
                         return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);
                 })                
-                .do((data) => {                           
+                .do((data) => {
+                    console.log("set cache ", REDIS_WORKOUT_CACHE);                   
                     client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
                 })         
                 .map((data) => workoutMapping.transform(data))
