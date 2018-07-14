@@ -35,7 +35,7 @@ meditation.get$ = (req, res) => {
                     }
                 })                
                 .do((data) => {
-                    console.log("set cache ", REDIS_MEDITATION_CACHE);                   
+                    //console.log("set cache ", REDIS_MEDITATION_CACHE);                   
                     client.setex(REDIS_MEDITATION_CACHE, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                 })               
                 .map((data) => meditationMapping.transform(data))

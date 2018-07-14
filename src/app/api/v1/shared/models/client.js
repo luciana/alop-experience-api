@@ -31,7 +31,8 @@ client.getCachedDataFor$ = (key) => {
      return Observable.create( observer => {
         client.get(key, (error, result) => {
             var value = null;
-            if(result){               
+            if(result){         
+                console.log("read cache", key);
                 value = JSON.parse(result);
             }
             observer.next(value);

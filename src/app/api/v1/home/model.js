@@ -30,11 +30,11 @@ const   loggingService = require('../shared/services/logging'),
 
 let home = {};
 
-home.defaultAccount$ = () =>{ 
+home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
-                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"                    
+                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"
             });
     const w$ = workout.getDefault$();
     const a$ = workout.getDefaultActivities$();
