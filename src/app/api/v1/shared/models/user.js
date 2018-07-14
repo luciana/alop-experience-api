@@ -32,7 +32,6 @@ user.get$ = (req, res) => {
                             })                          
                             .map((data) => userMapping.transform(data))
                             .do((data) => {
-                                //console.log("set cache ", REDIS_USER_CACHE);
                                 client.setex(REDIS_USER_CACHE, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                             })
                             .catch((error) => {                                  
@@ -63,36 +62,15 @@ user.getDefault$ = () =>{
 };
 
 user.validateToken$ = (req, res)  => {
-
-        const { authorization } = req.headers;
-      
-        //Given the authorization token is not provided
-        //Then go the API
-        // const e$ = Observable.of(authorization)
-        //            .filter(v => !v);
-
-        //Given the authorization token is provided and it is valid
-        //Then go the API
-
-        //Given the authorization token is provided but it is invalid 
-        //Then return 401
-        // const o$ = Observable.of(authorization)
-        //             .filter(v => v)
-        //             .switchMap(() => tokenInfoService.get(req.headers))
-        //             .catch((error) => {                            
-        //                 loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");
-        //             });
-
-       if ( !authorization ){           
-            return Observable.of(authorization);
-       }else{           
-            return tokenInfoService.get(req.headers)
-                    .catch((error) => {
-                        loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");
-                    });
-       }
-  
-        //return Observable.merge(e$,o$);
+    const { authorization } = req.headers;
+    if ( !authorization ){           
+        return Observable.of(authorization);
+    }else{           
+        return tokenInfoService.get(req.headers)
+                .catch((error) => {
+                    loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");
+                });
+    }
 };
 
 module.exports = user;
