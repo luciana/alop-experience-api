@@ -68,24 +68,31 @@ user.validateToken$ = (req, res)  => {
       
         //Given the authorization token is not provided
         //Then go the API
-        const e$ = Observable.of(authorization)
-                   .filter(v => !v);
+        // const e$ = Observable.of(authorization)
+        //            .filter(v => !v);
 
         //Given the authorization token is provided and it is valid
         //Then go the API
 
         //Given the authorization token is provided but it is invalid 
         //Then return 401
-        const o$ = Observable.of(authorization)
-                    .filter(v => v)
-                    .switchMap(() => tokenInfoService.get(req.headers))
-                    .catch((error) => {                            
+        // const o$ = Observable.of(authorization)
+        //             .filter(v => v)
+        //             .switchMap(() => tokenInfoService.get(req.headers))
+        //             .catch((error) => {                            
+        //                 loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");
+        //             });
+
+       if ( !authorization ){           
+            return Observable.of(authorization);
+       }else{           
+            return tokenInfoService.get(req.headers)
+                    .catch((error) => {
                         loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");
                     });
-
-       
+       }
   
-        return Observable.merge(e$,o$);
+        //return Observable.merge(e$,o$);
 };
 
 module.exports = user;
