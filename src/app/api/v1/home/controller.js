@@ -22,7 +22,7 @@ const loggingService = require('../shared/services/logging'),
         home = require('./model.js');
 
 var REDIS_CACHE_TIME = configModule.get('REDIS_CACHE_TIME');
-const REDIS_HOME_CACHE = "alop-adapter-home";
+
 
 let homeController = {};
 
@@ -58,6 +58,8 @@ homeController.get = (req, res, next) =>{
 
 homeController.getHomeData = (req, res, next) => {
         let account = {};
+        const key = homeController.getCacheKey(req.headers);
+
         home.getAccount$(req, res)
         .subscribe(
             (value) => {
@@ -79,7 +81,7 @@ homeController.getHomeData = (req, res, next) => {
                 res.json(msg);
             },
             () => {
-                client.setex(REDIS_HOME_CACHE, REDIS_CACHE_TIME, JSON.stringify(account));
+                client.setex(key, REDIS_CACHE_TIME, JSON.stringify(account));
                 res.status(200);
                 res.json(account);
                
@@ -115,6 +117,13 @@ homeController.getDefaultHomeData = (req, res, next) => {
                 res.json(account);
             }
         );
+};
+
+homeController.getCacheKey = (header) =>{
+    //should encrypt it?
+    const REDIS_HOME_CACHE = "alop-adapter-home";
+    const { authorization } = header;
+    return REDIS_HOME_CACHE + authorization;
 };
 
 module.exports = homeController;

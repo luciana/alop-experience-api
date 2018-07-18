@@ -63,7 +63,7 @@ user.getCacheKey = (header) =>{
     //should encrypt it?
     const { authorization } = header;
     return REDIS_USER_CACHE + authorization;
-}
+};
 
 user.validateToken$ = (req, res)  => {
     const { authorization } = req.headers;
