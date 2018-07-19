@@ -11,9 +11,7 @@
 
 'use strict'
 
-const Observable = require('rxjs/Observable').Observable,
-        client = require('../shared/models/client'),
-        configModule = require('config');
+const Observable = require('rxjs/Observable').Observable;
 
 const loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
@@ -21,109 +19,50 @@ const loggingService = require('../shared/services/logging'),
         user = require('../shared/models/user'),
         home = require('./model.js');
 
-var REDIS_CACHE_TIME = configModule.get('REDIS_CACHE_TIME');
-
-
 let homeController = {};
-
-
 
 homeController.get = (req, res, next) =>{
      let account = {};
-          user.validateToken$(req, res)
-            .subscribe((v) => {
-                if ( !v ){ //token is empty                     
-                    homeController.getDefaultHomeData(req, res, next);
-                }else {
-                    if (v.statusCode === 401){ //token is invalid                      
-                        let logEntry = "Unauthorized Request - Invalid Token";
-                        let msg = { message: logEntry };
-                        loggingModel.logWithLabel(logEntry, error, tracker.requestID, "ERROR");
-                        res.status(401);
+    const validate$ = user.validateToken$(req, res);
+
+    const defaultAccount$ = validate$                                
+                            .filter(value => !value)                               
+                            .switchMap(()=>  home.defaultAccount$());
+                    
+    const homeAccount$ = validate$                 
+                        .filter(value => value)
+                        .switchMap(()=>  home.getAccount$(req, res));
+
+    Observable.merge(defaultAccount$,homeAccount$)
+                .subscribe(
+                    (value) => {
+                        try{
+                            account = Object.assign(value, account);
+                        }catch(error){
+                            let logEntry = "Home Subscriber Value Error Message: ";
+                            let msg = { message: logEntry + error };
+                            loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
+                            res.status(500);
+                            res.json(msg);
+                        }                        
+                    },
+                    (error) => {                       
+                        let logEntry = "Home Subscriber Error Message: ";
+                        let status = 500;
+                        if(error.statusCode && error.statusCode === 401){
+                            status = 401;
+                            logEntry = "Unauthorized access - 401 for Token Validation";
+                        }                        
+                        let msg = { message: logEntry + error };
+                        loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
+                        res.status(status);
                         res.json(msg);
-                    }else{                      
-                        homeController.getHomeData(req, res, next);
+                    },
+                    () => {                       
+                        res.status(200);
+                        res.json(account);
                     }
-                }                      
-        },
-        (error) => {                       
-            let logEntry = "Error Validating Request token";
-            let msg = { message: logEntry };
-            loggingModel.logWithLabel(logEntry, error, tracker.requestID, "ERROR");
-            res.status(401);
-            res.json(msg);
-        },
-        ()=> {});
-};
-
-homeController.getHomeData = (req, res, next) => {
-        let account = {};
-        const key = homeController.getCacheKey(req.headers);
-
-        home.getAccount$(req, res)
-        .subscribe(
-            (value) => {
-                try{    
-                    account = Object.assign(value, account);
-                }catch(error){
-                    let logEntry = "Home Subscriber Value Error Message: ";
-                    let msg = { message: logEntry + error };
-                    loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
-                    res.status(500);
-                    res.json(msg);
-                }
-            },
-            (error) => {
-                let logEntry = "Home Subscriber Error Message: ";
-                let msg = { message: logEntry + error };
-                loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
-                res.status(500);
-                res.json(msg);
-            },
-            () => {
-                client.setex(key, REDIS_CACHE_TIME, JSON.stringify(account));
-                res.status(200);
-                res.json(account);
-               
-            }
-        );
-};
-
-homeController.getDefaultHomeData = (req, res, next) => {
-
-    let account = {};
-    home.defaultAccount$()
-    .subscribe(
-            (value) => {
-                try{                  
-                    account = Object.assign(value, account);
-                }catch(error){
-                    let logEntry = "Home Default Subscriber Value Error Message: ";
-                    let msg = { message: logEntry + error };
-                    loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
-                    res.status(500);
-                    res.json(msg);
-                }
-            },
-            (error) => {
-                let logEntry = "Home Default Subscriber Error Message: ";
-                let msg = { message: logEntry + error };
-                loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
-                res.status(500);
-                res.json(msg);
-            },
-            () => {              
-                res.status(200);
-                res.json(account);
-            }
-        );
-};
-
-homeController.getCacheKey = (header) =>{
-    //should encrypt it?
-    const REDIS_HOME_CACHE = "alop-adapter-home";
-    const { authorization } = header;
-    return REDIS_HOME_CACHE + authorization;
+                );
 };
 
 module.exports = homeController;

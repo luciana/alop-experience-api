@@ -60,21 +60,21 @@ user.getDefault$ = () =>{
 };
 
 user.getCacheKey = (header) =>{
-    //should encrypt it?
     const { authorization } = header;
     return REDIS_USER_CACHE + authorization;
 };
 
 user.validateToken$ = (req, res)  => {
     const { authorization } = req.headers;
-    if ( !authorization ){           
-        return Observable.of(authorization);
-    }else{           
-        return tokenInfoService.get(req.headers)
-                .catch((error) => {
-                    loggingModel.logWithLabel("Token Validation Service", error, tracker.requestID, "ERROR");
-                });
-    }
+
+    const e$ = Observable.of(authorization)
+               .filter(v => !v);
+
+    const o$ = Observable.of(authorization)
+                .filter(v => v)
+                .switchMap(() => tokenInfoService.get(req.headers));
+
+    return Observable.merge(e$,o$);
 };
 
 module.exports = user;

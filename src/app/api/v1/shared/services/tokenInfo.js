@@ -11,7 +11,7 @@ var apiCall = require('./apiCall');
 let tokenInfo = {};
 
 tokenInfo.get = function(headers){
-
+	
 	const { authorization } = headers;
 
 	const options = {
