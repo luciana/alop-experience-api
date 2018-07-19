@@ -42,11 +42,11 @@ home.defaultAccount$ = () =>{
                         favorites: {}
                     })
     const m$ = meditation.getDefault$();
-    return Observable.concat(m$, 
-                                Observable.forkJoin(f$, a$, b$, wl$, w$, u$)
+    return Observable.concat(a$, 
+                                Observable.forkJoin(b$, wl$, w$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
-    
+
 };
 
 home.getAccount$ = (req, res) => {
@@ -60,14 +60,10 @@ home.getAccount$ = (req, res) => {
     const f$ = workout.getFavorites$(req, res);
     const m$ = meditation.get$(req,res);
 
-	return Observable.concat(m$, 
-                                Observable.forkJoin(f$, a$, b$, wl$, w$, u$)
+	return Observable.concat(a$, 
+                                Observable.forkJoin(b$, wl$, w$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
-    // return Observable.concat(wl$, 
-    //                             Observable.forkJoin(u$)
-    //                             .concatMap(results => Observable.from(results))
-    //                             );
 };
 
 module.exports = home;
