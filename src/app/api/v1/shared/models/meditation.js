@@ -23,20 +23,20 @@ const REDIS_MEDITATION_CACHE = "alop-adapter-meditation";
 let meditation = {};
 
 meditation.get$ = (req, res) => {
- 
+     let key = meditation.getKeyFor(REDIS_MEDITATION_CACHE, req.headers);
     	return meditationService.get(req.headers)
                 .catch((error) => {
                     if (error.statusCode === 401){  
                         loggingModel.logWithLabel("Meditation Service API 401 Return meditation default", error, tracker.requestID , "ERROR");           
-                        return Observable.of(meditationMapping.getDefault());  
+                        return Observable.of(meditationMapping.getDefault());
                     }else{                  
                         loggingModel.logWithLabel("Meditation Service API Return from cache", error, tracker.requestID , "ERROR");
-                        return client.getCachedDataFor$(REDIS_MEDITATION_CACHE);
+                        return client.getCachedDataFor$(key);
                     }
                 })                
                 .do((data) => {
                     //console.log("set cache ", REDIS_MEDITATION_CACHE);                   
-                    client.setex(REDIS_MEDITATION_CACHE, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                    client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                 })               
                 .map((data) => meditationMapping.transform(data))
                 .catch((error) => {                            
@@ -46,8 +46,12 @@ meditation.get$ = (req, res) => {
 };
 
 meditation.getDefault$ = () =>{
-    return Observable.of(meditationMapping.getDefault()); 
+    return Observable.of(meditationMapping.getDefault());
 };
 
+meditation.getKeyFor = (key, headers) =>{
+    const { authorization } = headers;
+    return key + authorization;
+};
 
 module.exports = meditation;

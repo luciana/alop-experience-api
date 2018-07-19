@@ -46,11 +46,7 @@ home.defaultAccount$ = () =>{
                                 Observable.forkJoin(f$, a$, b$, wl$, w$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
-    // return Observable.concat(wl$, 
-    //                             Observable.forkJoin(u$)
-    //                             .concatMap(results => Observable.from(results))
-    //                             );
-
+    
 };
 
 home.getAccount$ = (req, res) => {

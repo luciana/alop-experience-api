@@ -26,7 +26,7 @@ user.get$ = (req, res) => {
     const key = user.getCacheKey(req.headers);
     const callUserService$ = userService.get(req.headers)
                             .catch((error)=>{
-                                return Observable.of(userMapping.getDefault());
+                                return user.getDefault$;
                             })                          
                             .map((data) => userMapping.transform(data))
                             .do((data) => {
@@ -34,14 +34,14 @@ user.get$ = (req, res) => {
                             })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("User Data Transform - Return user default. Calling User Service", error, tracker.requestID, "ERROR");
-                                    return Observable.of(userMapping.getDefault());
+                                    return user.getDefault$;
                             });
 
     const cacheIsRetrieved$ = client.getCachedDataFor$(key)
                                 .filter((value) => value)
                                 .catch((error) => {                                       
                                     loggingModel.logWithLabel("User Data Transform - Return user default. There was data in cache.", error, tracker.requestID, "ERROR");
-                                    return Observable.of(userMapping.getDefault());
+                                    return user.getDefault$;
                                 });
 
     const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
@@ -49,7 +49,7 @@ user.get$ = (req, res) => {
                                 .switchMap(() => callUserService$)
                                 .catch((error) => {                                   
                                     loggingModel.logWithLabel("User Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
-                                    return Observable.of(userMapping.getDefault());
+                                    return user.getDefault$;
                                 });
                                
     return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);

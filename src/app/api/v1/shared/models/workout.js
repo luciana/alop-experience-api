@@ -40,20 +40,51 @@ const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
 let workout = {};
 
 workout.get$ = (req, res) => {
-    return workoutService.get(req.headers)
-                  .catch((error) => {                                                      
-                        loggingModel.logWithLabel("Workout Service API Return from cache", error, tracker.requestID , "ERROR");
-                        return client.getCachedDataFor$(REDIS_WORKOUT_CACHE);
-                })                
-                .do((data) => {
-                    //console.log("set cache ", REDIS_WORKOUT_CACHE);                   
-                    client.setex(REDIS_WORKOUT_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));
-                })         
-                .map((data) => workoutMapping.transform(data))
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Workout Data Transform - Return workout default", error, tracker.requestID, "ERROR");
-                    return Observable.of(workoutMapping.getDefault());
-                });
+    let key = workout.getKeyFor(REDIS_WORKOUT_CACHE, req.headers);
+
+    const callWorkoutService$ = workoutService.get(req.headers)
+                            .catch((error)=>{
+                                return workout.getDefault$;
+                            })                          
+                            .map((data) => workoutMapping.transform(data))
+                            .do((data) => {
+                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                            })
+                            .catch((error) => {                                  
+                                    loggingModel.logWithLabel("Workout Data Transform - Return Workout default. Calling Workout Service", error, tracker.requestID, "ERROR");
+                                    return workout.getDefault$;
+                            });
+
+    let cacheIsRetrieved$ = client.getCachedDataFor$(key)
+                                .filter((value) => value)
+                                .catch((error) => {
+                                    loggingModel.logWithLabel("Workout Data Transform - Return Workout default. There was data in cache.", error, tracker.requestID, "ERROR");
+                                    return workout.getDefault$;
+                                });
+
+    let cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+                                .filter((value) => !value)                               
+                                .switchMap(() => callWorkoutService$)
+                                .catch((error) => {                                   
+                                    loggingModel.logWithLabel("Workout Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
+                                    return workout.getDefault$;
+                                });
+                               
+    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+
+    // return workoutService.get(req.headers)
+    //             .catch((error) => {
+    //                     loggingModel.logWithLabel("Workout Service API Return from cache", error, tracker.requestID , "ERROR");
+    //                     return client.getCachedDataFor$(key);
+    //             })               
+    //             .map((data) => workoutMapping.transform(data))
+    //             .do((data) => {
+    //                 client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
+    //             })
+    //             .catch((error) => {
+    //                 loggingModel.logWithLabel("Workout Data Transform - Return workout default", error, tracker.requestID, "ERROR");
+    //                 return Observable.of(workoutMapping.getDefault());
+    //             });
 };
 
 workout.getDefault$ = () =>{
@@ -62,11 +93,12 @@ workout.getDefault$ = () =>{
 
 workout.getLabel$ = () => {
     return Observable.of({
-                 workout_label: "Classes selected for you today: "                     
+                 workout_label: "Classes selected for you today: "
             });
 };
 
 workout.getFavorites$ = (req, res) =>{
+    let key = workout.getKeyFor(REDIS_FAV_CACHE, req.headers);
     return favoriteService.get(req.headers)
                 .catch((error) => {  
                     if (error.statusCode === 401){        
@@ -80,10 +112,10 @@ workout.getFavorites$ = (req, res) =>{
                     }                 
                 })                
                 .do((data) => {                           
-                    client.setex(REDIS_FAV_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                  
+                    client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
                 })         
                 .map((data) => favoriteMapping.transform(data))
-                .catch((error) => {                   
+                .catch((error) => {
                     loggingModel.logWithLabel("Favorite Data Transform Return empty default", error, tracker.requestID, "ERROR");
                     return Observable.of({
                         favorites: {}
@@ -92,30 +124,64 @@ workout.getFavorites$ = (req, res) =>{
 };
 
 workout.getActivities$ = (req, res) =>{
-    return trackingService.get(req.headers)
-                .catch((error) => {   
-                    if (error.statusCode === 401){   
-                        loggingModel.logWithLabel("Activity Service API 401 Return empty default", error, tracker.requestID , "ERROR");     
-                        return Observable.of(activityMapping.getDefault());            
-                    }else{
-                        loggingModel.logWithLabel("Activity Service API Return from cache", error, tracker.requestID , "ERROR");
-                        return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);          
-                    }
+    let key = workout.getKeyFor(REDIS_ACTIVITY_CACHE, req.headers);
+    const callTrackingService$ = trackingService.get(req.headers)
+                            .catch((error)=>{
+                                return workout.getDefaultActivities$;
+                            })                          
+                            .map((data) => activityMapping.transform(data))
+                            .do((data) => {
+                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                            })
+                            .catch((error) => {                                  
+                                    loggingModel.logWithLabel("Tracking Data Transform - Return Tracking default. Calling Tracking Service", error, tracker.requestID, "ERROR");
+                                    return workout.getDefaultActivities$;
+                            });
+
+    let cacheIsRetrieved$ = client.getCachedDataFor$(key)
+                                .filter((value) => value)
+                                .catch((error) => {                                       
+                                    loggingModel.logWithLabel("Tracking Data Transform - Return Tracking default. There was data in cache.", error, tracker.requestID, "ERROR");
+                                    return workout.getDefaultActivities$;
+                                });
+
+    let cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+                                .filter((value) => !value)                               
+                                .switchMap(() => callTrackingService$)
+                                .catch((error) => {                                   
+                                    loggingModel.logWithLabel("Tracking Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
+                                    return workout.getDefaultActivities$;
+                                });
+                               
+    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+    // return trackingService.get(req.headers)
+    //             .catch((error) => {   
+    //                 if (error.statusCode === 401){   
+    //                     loggingModel.logWithLabel("Activity Service API 401 Return empty default", error, tracker.requestID , "ERROR");     
+    //                     return Observable.of(activityMapping.getDefault());         
+    //                 }else{
+    //                     loggingModel.logWithLabel("Activity Service API Return from cache", error, tracker.requestID , "ERROR");
+    //                     return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);
+    //                 }
                               
-                })                
-                .do((data) => {                           
-                    client.setex(REDIS_ACTIVITY_CACHE, REDIS_CACHE_TIME, JSON.stringify(data));                  
-                })         
-                .map((data) => activityMapping.transform(data))
-                .catch((error) => {                   
-                    loggingModel.logWithLabel("Activity Data Transform Return empty default", error, tracker.requestID, "ERROR");
-                     return Observable.of(activityMapping.getDefault()); 
-                });
+    //             })                
+    //             .do((data) => {                           
+    //                 client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
+    //             })         
+    //             .map((data) => activityMapping.transform(data))
+    //             .catch((error) => {                   
+    //                 loggingModel.logWithLabel("Activity Data Transform Return empty default", error, tracker.requestID, "ERROR");
+    //                  return Observable.of(activityMapping.getDefault()); 
+    //             });
 };
 
 workout.getDefaultActivities$ = () =>{
     return Observable.of(activityMapping.getDefault()); 
 };
 
+workout.getKeyFor = (key, headers) =>{
+    const { authorization } = headers;
+    return key + authorization;
+};
 
 module.exports = workout;
