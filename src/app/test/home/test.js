@@ -32,39 +32,39 @@
 
 		});
 
-		it('should return favorites default if takes longer than 4000ms to get response from favorities api', (done)=>{
- 			request.get('/api/v1/home')
- 			.set('Accept', 'application/json')	
- 			.timeout(4001)
- 			.set('Authorization', 'Bearer fab6b909db3d24c4a0577894c9d29e6dd83f7c30be4e6e66c68cb31465b4fe0e')
- 			.expect('Content-Type', /json/) 			
-	 		.expect(200)
- 			.end((err, res)=>{
- 				//Favorites default			
- 				expect(res.body.favorites).to.be.empty; 
+		// it('should return favorites default if takes longer than 4000ms to get response from favorities api', (done)=>{
+ 	// 		request.get('/api/v1/home')
+ 	// 		.set('Accept', 'application/json')	
+ 	// 		.timeout(4001)
+ 	// 		.set('Authorization', 'Bearer fab6b909db3d24c4a0577894c9d29e6dd83f7c30be4e6e66c68cb31465b4fe0e')
+ 	// 		.expect('Content-Type', /json/) 			
+	 // 		.expect(200)
+ 	// 		.end((err, res)=>{
+ 	// 			//Favorites default			
+ 	// 			expect(res.body.favorites).to.be.empty; 
 
- 				done(err);
- 			})
- 		});
+ 	// 			done(err);
+ 	// 		})
+ 	// 	});
 
- 		it('should return meditation default if takes longer than 2000ms to get response from meditation api', (done)=>{
- 			request.get('/api/v1/home')
- 			.set('Accept', 'application/json')	
- 			.timeout(5001)
- 			.set('Authorization', 'Bearer fab6b909db3d24c4a0577894c9d29e6dd83f7c30be4e6e66c68cb31465b4fe0e')
- 			.expect('Content-Type', /json/) 			
-	 		.expect(200)
- 			.end((err, res)=>{
- 				//Meditation default			
- 				expect(res.body.meditations).to.be.an('array'); 
- 				expect(res.body.meditations[0]).to.have.property('id').that.is.a('number').equal(1);
- 				expect(res.body.meditations[0]).to.have.property('title').that.is.a('string').equal('Muscle-Tension Release Meditation');
- 				expect(res.body.meditations[0]).to.have.property('duration').that.is.a('string').equal('14.25 min'); 
- 				expect(res.body.meditations[0]).to.have.property('path').that.is.empty; 
+ 		// it('should return meditation default if takes longer than 2000ms to get response from meditation api', (done)=>{
+ 		// 	request.get('/api/v1/home')
+ 		// 	.set('Accept', 'application/json')	
+ 		// 	.timeout(2001)
+ 		// 	.set('Authorization', 'Bearer fab6b909db3d24c4a0577894c9d29e6dd83f7c30be4e6e66c68cb31465b4fe0e')
+ 		// 	.expect('Content-Type', /json/) 			
+	 	// 	.expect(200)
+ 		// 	.end((err, res)=>{
+ 		// 		//Meditation default			
+ 		// 		expect(res.body.meditations).to.be.an('array'); 
+ 		// 		expect(res.body.meditations[0]).to.have.property('id').that.is.a('number').equal(1);
+ 		// 		expect(res.body.meditations[0]).to.have.property('title').that.is.a('string').equal('Muscle-Tension Release Meditation');
+ 		// 		expect(res.body.meditations[0]).to.have.property('duration').that.is.a('string').equal('14.25 min'); 
+ 		// 		expect(res.body.meditations[0]).to.have.property('path').that.is.empty; 
 
- 				done(err);
- 			})
- 		});
+ 		// 		done(err);
+ 		// 	})
+ 		// });
 
  		it('should return activities default if takes longer than 5000ms to get response from tracking api', (done) =>{
  			request.get('/api/v1/home')
@@ -147,11 +147,11 @@
  				//Banner default
  				expect(res.body.banner_image).to.not.be.empty;  	
  				//Meditation default			
- 				expect(res.body.meditations).to.be.an('array'); 
- 				expect(res.body.meditations[0]).to.have.property('id').that.is.a('number').equal(1);
- 				expect(res.body.meditations[0]).to.have.property('title').that.is.a('string').equal('Muscle-Tension Release Meditation');
- 				expect(res.body.meditations[0]).to.have.property('duration').that.is.a('string').equal('14.25 min'); 
- 				expect(res.body.meditations[0]).to.have.property('path').that.is.empty; 
+ 				// expect(res.body.meditations).to.be.an('array'); 
+ 				// expect(res.body.meditations[0]).to.have.property('id').that.is.a('number').equal(1);
+ 				// expect(res.body.meditations[0]).to.have.property('title').that.is.a('string').equal('Muscle-Tension Release Meditation');
+ 				// expect(res.body.meditations[0]).to.have.property('duration').that.is.a('string').equal('14.25 min'); 
+ 				// expect(res.body.meditations[0]).to.have.property('path').that.is.empty; 
  				//Workout default
  				expect(res.body.workouts).to.have.lengthOf(4); 			
  				expect(res.body.workouts).to.not.be.empty;
@@ -202,7 +202,7 @@
  				expect(res.body.favorites).to.be.empty; 
  				expect(res.body).to.have.length > 0;
 
- 				expect(res.body.meditations).to.be.an('array');  
+ 				//expect(res.body.meditations).to.be.an('array');  
  				//expect(res.body.meditations[0]).to.have.property('path').that.is.not.empty; 
  				done(err);
  			})
@@ -248,7 +248,7 @@
  				expect(res.body.favorites).to.be.empty; 
  				expect(res.body).to.have.length > 0;
 
- 				expect(res.body.meditations).to.be.an('array');  
+ 				//expect(res.body.meditations).to.be.an('array');  
  				//expect(res.body.meditations[0]).to.have.property('path').that.is.not.empty; 
  				 
  				done(err);
