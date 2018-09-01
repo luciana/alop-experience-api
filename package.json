@@ -4,6 +4,7 @@
   "description": "Experience API for ALOP - it transforms and orchestrates API calls to business API to provide the necessary experience data for the mobile UI apps.",
   "scripts": {
     "test": "NODE_ENV=production mocha './src/app/test/**/*.js' --exit",
+    "test-dev": "NODE_ENV=development mocha './src/app/test/**/*.js' --exit",
     "start": "NODE_ENV=production pm2 start server.js  --watch --no-daemon",
     "start-dev": "NODE_ENV=development pm2 start server.js  --watch --no-daemon",
     "stop": "pm2 kill"
