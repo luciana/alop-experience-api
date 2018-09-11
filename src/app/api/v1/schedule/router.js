@@ -20,7 +20,7 @@ router.use((req, res, next) => {
     next();
 });
 
-//router.get('/schedule', tracker.trackSession, schedule.get);
+router.get('/schedules', tracker.trackSession, schedule.get);
 router.get('/schedule', tracker.trackSession, schedule.getById);
 
 module.exports = router;

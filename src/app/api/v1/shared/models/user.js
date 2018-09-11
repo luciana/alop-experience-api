@@ -21,6 +21,7 @@ const userService = require('../services/user'),
 const REDIS_USER_CACHE = "alop-adapter-user";
 
 let user = {};
+user.data = {};
 user.get$ = (req, res) => {
    
     const key = user.getCacheKey(req.headers);

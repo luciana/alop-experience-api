@@ -27,7 +27,7 @@ scheduleController.get = (req, res, next) =>{
                         account = Object.assign(value, account);                            
                     },
                     (error) => {                       
-                        let logEntry = "schedule Subscriber Error Message: ";                              
+                        let logEntry = "schedule Subscriber Error Message: ";                    
                         let msg = { message: logEntry + error };
                         loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
                         res.status(500);
@@ -43,8 +43,8 @@ scheduleController.get = (req, res, next) =>{
 
 scheduleController.getById = (req, res, next) =>{
     let account = {};
-    let created_at = new Date("2018-09-01T00:00:00.000Z");
-    let id = schedule.getWeekId(created_at);
+    console.log("req query", req.query);
+    let id = schedule.getWeekId(req.query);
     schedule.getListById$(id)
                 .subscribe(
                     (value) => {              

@@ -26,6 +26,7 @@ const   loggingService = require('../shared/services/logging'),
         tracker = require('../shared/middleware/tracker'),
         user = require('../shared/models/user'),
         workout = require('../shared/models/workout'),
+        schedule = require('../schedule/model'),
         meditation = require('../shared/models/meditation');
 
 let home = {};
@@ -51,6 +52,11 @@ home.defaultAccount$ = () =>{
 
 home.getAccount$ = (req, res) => {
   	const u$ = user.get$(req, res);
+
+    const s$ = u$               
+                .map(params => params.user.created_at)                
+                .switchMap((d) =>  schedule.getListByDate$(d));
+
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
                  banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"
@@ -61,7 +67,7 @@ home.getAccount$ = (req, res) => {
     const m$ = meditation.get$(req,res);
 
 	return Observable.concat(a$, 
-                                Observable.forkJoin(b$, wl$, w$, u$)
+                                Observable.forkJoin(b$, wl$, s$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 };

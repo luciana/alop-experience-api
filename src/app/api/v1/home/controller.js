@@ -26,13 +26,11 @@ homeController.get = (req, res, next) =>{
     const validate$ = user.validateToken$(req, res);
 
     const defaultAccount$ = validate$                                
-                            .filter(value => !value)
-                            .do((d) => console.log("default filtering", d))                   
+                            .filter(value => !value)                                
                             .switchMap(()=>  home.defaultAccount$());
                     
     const homeAccount$ = validate$                 
-                        .filter(value => value)
-                        .do((d) => console.log("home filtering", d))
+                        .filter(value => value)                       
                         .switchMap(()=>  home.getAccount$(req, res));
 
     Observable.merge(defaultAccount$,homeAccount$)
