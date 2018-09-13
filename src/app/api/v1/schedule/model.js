@@ -55,7 +55,7 @@ schedule.getWeekId = (userDate) => {
 	    if(id == 0){
 	    	id = 1;
 	    };	   
-	    console.log("weeksBtw", id);
+	    //console.log("weeksBtw", id);
 	    return id;
 
 	}catch(error){
