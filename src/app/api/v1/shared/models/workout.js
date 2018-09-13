@@ -48,7 +48,7 @@ workout.get$ = (req, res) => {
                             })                          
                             .map((data) => workoutMapping.transform(data))
                             .do((data) => {
-                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                               // client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                             })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("Workout Data Transform - Return Workout default. Calling Workout Service", error, tracker.requestID, "ERROR");
@@ -71,20 +71,6 @@ workout.get$ = (req, res) => {
                                 });
                                
     return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
-
-    // return workoutService.get(req.headers)
-    //             .catch((error) => {
-    //                     loggingModel.logWithLabel("Workout Service API Return from cache", error, tracker.requestID , "ERROR");
-    //                     return client.getCachedDataFor$(key);
-    //             })               
-    //             .map((data) => workoutMapping.transform(data))
-    //             .do((data) => {
-    //                 client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
-    //             })
-    //             .catch((error) => {
-    //                 loggingModel.logWithLabel("Workout Data Transform - Return workout default", error, tracker.requestID, "ERROR");
-    //                 return Observable.of(workoutMapping.getDefault());
-    //             });
 };
 
 workout.getDefault$ = () =>{
@@ -112,7 +98,7 @@ workout.getFavorites$ = (req, res) =>{
                     }                 
                 })                
                 .do((data) => {                           
-                    client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
+                    //client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
                 })         
                 .map((data) => favoriteMapping.transform(data))
                 .catch((error) => {
@@ -131,7 +117,7 @@ workout.getActivities$ = (req, res) =>{
                             })                          
                             .map((data) => activityMapping.transform(data))
                             .do((data) => {
-                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                                //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                             })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("Tracking Data Transform - Return Tracking default. Calling Tracking Service", error, tracker.requestID, "ERROR");
@@ -154,25 +140,7 @@ workout.getActivities$ = (req, res) =>{
                                 });
                                
     return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
-    // return trackingService.get(req.headers)
-    //             .catch((error) => {   
-    //                 if (error.statusCode === 401){   
-    //                     loggingModel.logWithLabel("Activity Service API 401 Return empty default", error, tracker.requestID , "ERROR");     
-    //                     return Observable.of(activityMapping.getDefault());         
-    //                 }else{
-    //                     loggingModel.logWithLabel("Activity Service API Return from cache", error, tracker.requestID , "ERROR");
-    //                     return client.getCachedDataFor$(REDIS_ACTIVITY_CACHE);
-    //                 }
-                              
-    //             })                
-    //             .do((data) => {                           
-    //                 client.setex(key, REDIS_CACHE_TIME, JSON.stringify(data));
-    //             })         
-    //             .map((data) => activityMapping.transform(data))
-    //             .catch((error) => {                   
-    //                 loggingModel.logWithLabel("Activity Data Transform Return empty default", error, tracker.requestID, "ERROR");
-    //                  return Observable.of(activityMapping.getDefault()); 
-    //             });
+
 };
 
 workout.getDefaultActivities$ = () =>{

@@ -31,7 +31,7 @@ user.get$ = (req, res) => {
                             })                          
                             .map((data) => userMapping.transform(data))
                             .do((data) => {
-                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                                //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                             })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("User Data Transform - Return user default. Calling User Service", error, tracker.requestID, "ERROR");

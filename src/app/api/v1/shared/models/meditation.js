@@ -30,7 +30,7 @@ meditation.get$ = (req, res) => {
                             })                          
                             .map((data) => meditationMapping.transform(data))
                             .do((data) => {
-                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                                //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                             })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("meditation Data Transform - Return meditation default. Calling meditation Service", error, tracker.requestID, "ERROR");
