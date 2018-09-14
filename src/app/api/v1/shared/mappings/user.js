@@ -22,7 +22,7 @@ user.transform = (data) => {
         }];
         let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
         result.id = data.id || 0;
-        result.name = data.name || "Hello";
+        result.name = data.name || "New Friend";
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
         result.created_at = data.created_at || new Date().toISOString();
@@ -50,7 +50,7 @@ user.getDefault = () =>{
         }];
     let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
     result.id = 0;
-    result.name = "Hello";
+    result.name = "New Friend";
     result.email = "";
     result.sign_in_count = 1;
     result.created_at = new Date().toISOString();
