@@ -2,6 +2,6 @@
   "url": "http://localhost:3000/",
   "host": "alop-experience-api.herokuapp.com",
   "logging": false,
-  "REDIS_CACHE_TIME": 5000,
+  "REDIS_CACHE_TIME": 0,
   "REDISTOGO_URL":null
 }

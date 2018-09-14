@@ -41,13 +41,15 @@ user.get$ = (req, res) => {
 
     const cacheIsRetrieved$ = client.getCachedDataFor$(key)
                                 .filter((value) => value)
+                                .do((d) => console.log("got data from user caching", d))  
                                 .catch((error) => {                                       
                                     loggingModel.logWithLabel("User Data Transform - Return user default. There was data in cache.", error, tracker.requestID, "ERROR");
                                     return user.getDefault$;
                                 });
 
     const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
-                                .filter((value) => !value)                               
+                                .filter((value) => !value)             
+                                 .do((d) => console.log("did not got data from user caching about to call service", d))                    
                                 .switchMap(() => callUserService$)
                                 .catch((error) => {                                   
                                     loggingModel.logWithLabel("User Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
