@@ -54,23 +54,23 @@ workout.get$ = (req, res) => {
                                     loggingModel.logWithLabel("Workout Data Transform - Return Workout default. Calling Workout Service", error, tracker.requestID, "ERROR");
                                     return workout.getDefault$;
                             });
+    return Observable.merge(callWorkoutService$);
+    // let cacheIsRetrieved$ = client.getCachedDataFor$(key)
+    //                             .filter((value) => value)
+    //                             .catch((error) => {
+    //                                 loggingModel.logWithLabel("Workout Data Transform - Return Workout default. There was data in cache.", error, tracker.requestID, "ERROR");
+    //                                 return workout.getDefault$;
+    //                             });
 
-    let cacheIsRetrieved$ = client.getCachedDataFor$(key)
-                                .filter((value) => value)
-                                .catch((error) => {
-                                    loggingModel.logWithLabel("Workout Data Transform - Return Workout default. There was data in cache.", error, tracker.requestID, "ERROR");
-                                    return workout.getDefault$;
-                                });
-
-    let cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
-                                .filter((value) => !value)                               
-                                .switchMap(() => callWorkoutService$)
-                                .catch((error) => {                                   
-                                    loggingModel.logWithLabel("Workout Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
-                                    return workout.getDefault$;
-                                });
+    // let cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+    //                             .filter((value) => !value)                               
+    //                             .switchMap(() => callWorkoutService$)
+    //                             .catch((error) => {                                   
+    //                                 loggingModel.logWithLabel("Workout Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
+    //                                 return workout.getDefault$;
+    //                             });
                                
-    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+    // return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
 };
 
 workout.getDefault$ = () =>{

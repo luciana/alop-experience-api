@@ -36,23 +36,23 @@ meditation.get$ = (req, res) => {
                                     loggingModel.logWithLabel("meditation Data Transform - Return meditation default. Calling meditation Service", error, tracker.requestID, "ERROR");
                                     return meditation.getDefault$;
                             });
+    return Observable.merge(callMeditationService$);
+    // const cacheIsRetrieved$ = client.getCachedDataFor$(key)
+    //                             .filter((value) => value)
+    //                             .catch((error) => {                                       
+    //                                 loggingModel.logWithLabel("meditation Data Transform - Return meditation default. There was data in cache.", error, tracker.requestID, "ERROR");
+    //                                 return meditation.getDefault$;
+    //                             });
 
-    const cacheIsRetrieved$ = client.getCachedDataFor$(key)
-                                .filter((value) => value)
-                                .catch((error) => {                                       
-                                    loggingModel.logWithLabel("meditation Data Transform - Return meditation default. There was data in cache.", error, tracker.requestID, "ERROR");
-                                    return meditation.getDefault$;
-                                });
-
-    const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
-                                .filter((value) => !value)                               
-                                .switchMap(() => callMeditationService$)
-                                .catch((error) => {                                   
-                                    loggingModel.logWithLabel("meditation Data Transform - Return meditation default. There was not data in cache", error, tracker.requestID, "ERROR");
-                                    return meditation.getDefault$;
-                                });
+    // const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+    //                             .filter((value) => !value)                               
+    //                             .switchMap(() => callMeditationService$)
+    //                             .catch((error) => {                                   
+    //                                 loggingModel.logWithLabel("meditation Data Transform - Return meditation default. There was not data in cache", error, tracker.requestID, "ERROR");
+    //                                 return meditation.getDefault$;
+    //                             });
                                
-    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+    // return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
 
 };
 

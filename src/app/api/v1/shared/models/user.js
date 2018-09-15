@@ -26,7 +26,7 @@ user.get$ = (req, res) => {
    
     const key = user.getCacheKey(req.headers);
     const callUserService$ = userService.get(req.headers)
-                            //.do((d) => console.log("user service", d))  
+                            .do((d) => console.log("user service", d))  
                             .catch((error)=>{
                                 return user.getDefault$;
                             })                          
@@ -39,24 +39,25 @@ user.get$ = (req, res) => {
                                     return user.getDefault$;
                             });
 
-    const cacheIsRetrieved$ = client.getCachedDataFor$(key)
-                                .filter((value) => value)
-                                .do((d) => console.log("got data from user caching", d))  
-                                .catch((error) => {                                       
-                                    loggingModel.logWithLabel("User Data Transform - Return user default. There was data in cache.", error, tracker.requestID, "ERROR");
-                                    return user.getDefault$;
-                                });
+    return Observable.merge(callUserService$);
+    // const cacheIsRetrieved$ = client.getCachedDataFor$(key)
+    //                             .filter((value) => value)
+    //                             .do((d) => console.log("got data from user caching", d))
+    //                             .catch((error) => {                                       
+    //                                 loggingModel.logWithLabel("User Data Transform - Return user default. There was data in cache.", error, tracker.requestID, "ERROR");
+    //                                 return user.getDefault$;
+    //                             });
 
-    const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
-                                .filter((value) => !value)             
-                                 .do((d) => console.log("did not got data from user caching about to call service", d))                    
-                                .switchMap(() => callUserService$)
-                                .catch((error) => {                                   
-                                    loggingModel.logWithLabel("User Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
-                                    return user.getDefault$;
-                                });
+    // const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+    //                             .filter((value) => !value)             
+    //                              .do((d) => console.log("did not got data from user caching about to call service", d))                    
+    //                             .switchMap(() => callUserService$)
+    //                             .catch((error) => {                                   
+    //                                 loggingModel.logWithLabel("User Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
+    //                                 return user.getDefault$;
+    //                             });
                                
-    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+    // return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
 };
 
 user.getDefault$ = () =>{
