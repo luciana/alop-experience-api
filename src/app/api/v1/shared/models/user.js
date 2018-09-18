@@ -26,15 +26,15 @@ user.get$ = (req, res) => {
    
     const key = user.getCacheKey(req.headers);
     const callUserService$ = userService.get(req.headers)
-                            .do((d) => console.log("user service"))
+                            //.do((d) => console.log("user service", d))
                             .catch((error)=>{
-                                loggingModel.logWithLabel("User Service Call - Return user default. Calling User Service", error, tracker.requestID, "ERROR");                                    
+                                //loggingModel.logWithLabel("User Service Call - Return user default. Calling User Service", error, tracker.requestID, "ERROR");                                    
                                 return user.getDefault$;
                             })                          
                             .map((data) => userMapping.transform(data))
-                            .do((data) => {
-                                //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
-                            })
+                            // .do((data) => {
+                            //     //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                            // })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("User Data Transform - Return user default. Calling User Service", error, tracker.requestID, "ERROR");
                                     return user.getDefault$;

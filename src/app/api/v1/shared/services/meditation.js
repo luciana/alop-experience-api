@@ -15,6 +15,7 @@ meditation.get = function(headers){
 		uri: apiCall.baseUrl + 'api/v3/meditations/1',	
 		headers: apiCall.parseHeaders(headers),
         json: true,
+        gzip: true,
         timeout: 2000
     };
 

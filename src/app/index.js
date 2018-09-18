@@ -5,10 +5,11 @@ let express = require('express'),
     app = express(),
     compression = require('compression');
 
-app.use(compression());
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(compression({ threshold: 0 }));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

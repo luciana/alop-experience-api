@@ -8,7 +8,7 @@
 'use strict'
 
 let user = {};
-user.transform = (data) => {      
+user.transform = (data) => {        
         let results = {};
         var result = {};       
         //let defaultSubs = [{"id":0, "plan_id":1, "status": "", "active_until": "", "type": "FREE", "plan_name":""}];

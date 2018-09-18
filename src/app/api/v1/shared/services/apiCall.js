@@ -36,7 +36,7 @@ class apiCall {
 							 "request": options.uri,
 							 "error": ""};
 						observer.error(errorValue);
-				} else if(resp.statusCode === 200) {
+				} else if(resp.statusCode === 200) {					
 					observer.next( body );
 					observer.complete();
 				} else {
