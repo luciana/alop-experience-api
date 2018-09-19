@@ -15,7 +15,7 @@ tracking.get = function(headers){
 		uri: apiCall.baseUrl +"api/v3/trackings",	
 		headers: apiCall.parseHeaders(headers),
         json: true,
-        gzip: true,
+        gzip: false,
         timeout: 5000
     };
 
