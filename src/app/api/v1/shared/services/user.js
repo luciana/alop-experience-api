@@ -15,7 +15,7 @@ user.get = function(headers){
 		uri: apiCall.baseUrl +"api/v3/users",
 		headers: apiCall.parseHeaders(headers),
 		json: true,
-		gzip: false,
+		gzip: true,
 		timeout: 10000
 	};
 

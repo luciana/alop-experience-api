@@ -8,15 +8,16 @@
 'use strict'
 
 let user = {};
-user.transform = (data) => {        
+user.transform = (data) => {   
+
         let results = {};
         var result = {};       
         //let defaultSubs = [{"id":0, "plan_id":1, "status": "", "active_until": "", "type": "FREE", "plan_name":""}];
         let defaultSubs =  [{
             "id": 0,
             "plan_id": 1,
-            "status": "active",
-            "active_until": "",
+            "status": null,
+            "active_until": null,
             "type": "TRIAL",
             "plan_name": "Free"
         }];
@@ -26,7 +27,7 @@ user.transform = (data) => {
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
         result.created_at = data.created_at || new Date().toISOString();
-        result.location = data.location || "";
+        result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
         result.badge_text = data.badge_text || 'Newbie Badge';
         result.badge_image = data.badge_image || defaultBadgeImage;
@@ -43,8 +44,8 @@ user.getDefault = () =>{
     let defaultSubs =  [{
             "id": 0,
             "plan_id": 1,
-            "status": "active",
-            "active_until": "",
+            "status": null,
+            "active_until": null,
             "type": "TRIAL",
             "plan_name": "Free"
         }];
@@ -54,7 +55,7 @@ user.getDefault = () =>{
     result.email = "";
     result.sign_in_count = 1;
     result.created_at = new Date().toISOString();
-    result.location = "";
+    result.location = null;
     result.subscriptions = defaultSubs;
     result.badge_text = 'Newbie Badge';
     result.badge_image = defaultBadgeImage;

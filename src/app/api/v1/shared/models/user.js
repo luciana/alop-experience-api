@@ -26,7 +26,7 @@ user.get$ = (req, res) => {
    
     const key = user.getCacheKey(req.headers);
     const callUserService$ = userService.get(req.headers)
-                            //.do((d) => console.log("user service", d))
+                            .do((d) => console.log("user service", d))
                             .catch((error)=>{
                                 //loggingModel.logWithLabel("User Service Call - Return user default. Calling User Service", error, tracker.requestID, "ERROR");                                    
                                 return user.getDefault$;
