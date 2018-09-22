@@ -26,7 +26,7 @@ tracking.getAll = function(headers){
 	const options = {
 		uri: apiCall.baseUrl +"api/v3/progress/all",	
 		headers: apiCall.parseHeaders(headers),
-        json: true,
+        json: false,
         timeout: 5000
     };
 

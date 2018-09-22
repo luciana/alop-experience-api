@@ -27,7 +27,7 @@ progress.getAll = function(headers){
 		uri: apiCall.baseUrl +"api/v3/progress/all",	
 		headers: apiCall.parseHeaders(headers),
         json: true,
-        gzip: false,
+        gzip: true,
         timeout: 100000
     };
 

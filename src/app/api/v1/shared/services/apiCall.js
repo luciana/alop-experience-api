@@ -17,13 +17,18 @@ class apiCall {
 		this.api_token = "MPP-Allow-API-Call";
 		this.baseUrl = configModule.get('url');
 	}	
-	parseHeaders(h){	
+	parseHeaders(h){			
 		if (h['host']){
 			delete h['host'];
 		}
 		h['x-3scale-proxy-secret-token'] = this.api_token;
 		h['accept'] = 'application/json';
-		h['content-type'] = 'application/json';		
+		h['content-type'] = 'application/json';	
+		if( h['Accept-Encoding']){
+			delete h['Accept-Encoding'];
+		}
+
+		console.log('api call header', h);
 		return h;
 	};
 	get(options){
