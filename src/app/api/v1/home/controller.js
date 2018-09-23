@@ -37,7 +37,7 @@ homeController.get = (req, res, next) =>{
                 .subscribe(
                     (value) => {
                         try{
-                            account = Object.assign(value, account);
+                            account = Object.assign(value, account);                            
                         }catch(error){
                             let logEntry = "Home Subscriber Value Error Message: ";
                             let msg = { message: logEntry + error };
@@ -58,7 +58,8 @@ homeController.get = (req, res, next) =>{
                         res.status(status);
                         res.json(msg);
                     },
-                    () => {                       
+                    () => {                
+                        console.log("successful call to home account", account);
                         res.status(200);
                         res.json(account);
                     }

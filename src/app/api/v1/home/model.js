@@ -33,18 +33,21 @@ let home = {};
 
 home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
+    const s$ = u$               
+                .map(params => params.user.created_at)                
+                .switchMap((d) =>  schedule.getListByDate$(d));
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
                  banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"
             });
-    const w$ = workout.getDefault$();
+    //const w$ = workout.getDefault$();
     const a$ = workout.getDefaultActivities$();
     const f$ = Observable.of({
                         favorites: {}
                     })
     const m$ = meditation.getDefault$();
     return Observable.concat(a$, 
-                                Observable.forkJoin(b$, wl$, w$, u$)
+                                Observable.forkJoin(b$, wl$, s$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 
@@ -61,7 +64,7 @@ home.getAccount$ = (req, res) => {
     const b$ = Observable.of({
                  banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"
             });
-    const w$ = workout.get$(req, res);
+    //const w$ = workout.get$(req, res);
     const a$ = workout.getActivities$(req, res);
     const f$ = workout.getFavorites$(req, res);
     const m$ = meditation.get$(req,res);

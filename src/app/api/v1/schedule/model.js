@@ -17,23 +17,38 @@ let schedule = {};
 
 schedule.getList$ = () =>{
 	let results = {};
-	results.workouts = JSON.parse(ALL_SCHEDULES);
+	results.workouts = JSON.parse(ALL_SCHEDULES).map((klass) => {
+							klass.instructor_video_id = 4;
+							return klass;
+						});	
 	return Observable.of(JSON.parse(ALL_SCHEDULES));
 };
 
 schedule.getListById$ = (id) =>{
-	let results = {};
-	results.workouts = JSON.parse(ALL_SCHEDULES).filter((el) => {return (el.schedule_id == id) });
+	let results = {};	
+	results.workouts = schedule.getFiltered(id);
 	return Observable.of(results);	
 };
 
 schedule.getListByDate$ = (d) =>{
 	let results = {};
 	let id = schedule.getWeekId(d);
-	results.workouts = JSON.parse(ALL_SCHEDULES).filter((el) => {return (el.schedule_id == id) });
+	results.workouts = schedule.getFiltered(id);
 	return Observable.of(results);	
 };
 
+schedule.getFiltered = (id) => {
+	return JSON.parse(ALL_SCHEDULES)						
+						.filter((el) => {return (el.schedule_id == id) })						
+						.map((klass, index) => {							
+							if (index % 2 == 0){
+								klass.instructor_video_id = 4;
+							}else{
+								klass.instructor_video_id = 1;
+							}
+							return klass;
+						});	
+}
 
 schedule.getWeekId = (userDate) => {
 	let id = 1;
