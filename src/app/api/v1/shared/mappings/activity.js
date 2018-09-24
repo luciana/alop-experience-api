@@ -128,12 +128,12 @@ activity.getDefault = () => {
     let results = {};
     var result = {};  
     
-    result.classes_taken_this_month = 0;
-    result.classes_taken_this_week = 0;
-    result.classes_taken_this_year = 0;
-    result.minutes_taken_this_month = 0;
-    result.minutes_taken_this_week = 0;
-    result.minutes_taken_this_year = 0;
+    result.classes_taken_this_month = "00";
+    result.classes_taken_this_week = "00";
+    result.classes_taken_this_year = "00";
+    result.minutes_taken_this_month = "000";
+    result.minutes_taken_this_week = "000";
+    result.minutes_taken_this_year = "000";
     result.recent_activities = [];
     result.monthly_activities = [];    
     results.activities = result;
