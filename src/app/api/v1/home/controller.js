@@ -58,8 +58,7 @@ homeController.get = (req, res, next) =>{
                         res.status(status);
                         res.json(msg);
                     },
-                    () => {                
-                        console.log("successful call to home account", account);
+                    () => {                                       
                         res.status(200);
                         res.json(account);
                     }
