@@ -28,7 +28,7 @@ class apiCall {
 			delete h['Accept-Encoding'];
 		}
 
-		console.log('api call header', h);
+		//console.log('api call header', h);
 		return h;
 	};
 	get(options){
