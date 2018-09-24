@@ -43,8 +43,10 @@ schedule.getFiltered = (id) => {
 						.map((klass, index) => {							
 							if (index % 2 == 0){
 								klass.instructor_video_id = 4;
+								klass.instructor_video_name = "Laura Locker";
 							}else{
 								klass.instructor_video_id = 1;
+								klass.instructor_video_name = "Jodi Brinkman";
 							}
 							return klass;
 						});	
