@@ -62,7 +62,7 @@ home.getAccount$ = (req, res) => {
 
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
-                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-abs.jpg"
+                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/laura_picture_spine_stretch.jpeg"
             });
     //const w$ = workout.get$(req, res);
     const a$ = workout.getActivities$(req, res);
