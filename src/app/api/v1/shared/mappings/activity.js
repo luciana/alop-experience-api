@@ -112,9 +112,9 @@ activity.transform = (data) =>{
         let results = {};
         let result = {};
         var m = new mappings();        
-        result.progress_label = "THIS WEEK";
-        result.classes_taken = m.get_classes_taken_this_week(data);
-        result.minutes_taken = m.get_minutes_taken_this_week(data);
+        result.progress_label = "THIS MONTH";
+        result.classes_taken = m.get_classes_taken_this_month(data);
+        result.minutes_taken = m.get_minutes_taken_this_month(data);
         result.classes_taken_this_week = m.get_classes_taken_this_week(data);
         result.minutes_taken_this_week = m.get_minutes_taken_this_week(data);
         result.classes_taken_this_month = m.get_classes_taken_this_month(data);
