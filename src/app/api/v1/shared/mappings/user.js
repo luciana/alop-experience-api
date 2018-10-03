@@ -19,24 +19,27 @@ user.transform = (data) => {
             "status": null,
             "active_until": null,
             "type": "TRIAL",
-            "plan_name": "Free"
+            "plan_name": "Free",
+            "plan_text": null,
+            "plan_info": null
         }];
         let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
         result.id = data.id || 0;
         result.name = data.name || "New Friend";
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
-        result.created_at = data.created_at || new Date().toISOString();
-        result.trial_end_date = data.trial_end_date || new Date().toISOString();
+        result.created_at = data.created_at || new Date().toISOString();        
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
         result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";
-        var info = "Your trial end date is " + result.trial_end_date;
+        var info = "";
         if(user.isPaid(result)){
              if(result.subscriptions[0].active_until){
                 info = "Subscription active until " + result.subscriptions[0].active_until;
              }
-        }       
+        }else if (data.trial_end_date){
+            info = "Your trial end date is " + data.trial_end_date;
+        }
         result.subscriptions[0].plan_info = info;
         result.badge_text = data.badge_text || 'Newbie Badge';
         result.badge_image = data.badge_image || defaultBadgeImage;
