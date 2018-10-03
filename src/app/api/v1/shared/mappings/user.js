@@ -27,8 +27,17 @@ user.transform = (data) => {
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
         result.created_at = data.created_at || new Date().toISOString();
+        result.trial_end_date = data.trial_end_date || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
+        result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";
+        var info = "Your trial end date is " + result.trial_end_date;
+        if(user.isPaid(result)){
+             if(result.subscriptions[0].active_until){
+                info = "Subscription active until " + result.subscriptions[0].active_until;
+             }
+        }       
+        result.subscriptions[0].plan_info = info;
         result.badge_text = data.badge_text || 'Newbie Badge';
         result.badge_image = data.badge_image || defaultBadgeImage;
         result.favorites_count = data.favorites_count || 0;
@@ -36,6 +45,10 @@ user.transform = (data) => {
         result.workout_taken_count = data.workout_taken_count || 0;
         results.user = result;
         return results;
+};
+
+user.isPaid = (user) => {
+        return user.subscriptions[0].plan_id == 2 || user.subscriptions[0].plan_id == 3;
 };
 
 user.getDefault = () =>{
