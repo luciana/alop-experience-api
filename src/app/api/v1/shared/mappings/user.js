@@ -33,12 +33,19 @@ user.transform = (data) => {
         result.subscriptions = data.subscriptions || defaultSubs;
         result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";
         var info = "";
+        const trial = new Date(data.trial_end_date);
         if(user.isPaid(result)){
-             if(result.subscriptions[0].active_until){
-                info = "Subscription active until " + result.subscriptions[0].active_until;
+            const active_until =  new Date(result.subscriptions[0].active_until);
+             if(active_until){
+                info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
              }
-        }else if (data.trial_end_date){
-            info = "Your trial end date is " + data.trial_end_date;
+        }else if (trial){
+            if(trial > new Date() ){
+                info = "Your trial period is over. Sign up below.";
+            }else {
+                info = "Your trial end date is " + (trial.getMonth() + 1) + '/' + trial.getDate() + '/' +  trial.getFullYear();
+            }
+            
         }
         result.subscriptions[0].plan_info = info;
         result.badge_text = data.badge_text || 'Newbie Badge';
