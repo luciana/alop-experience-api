@@ -40,7 +40,7 @@ user.transform = (data) => {
                 info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
              }
         }else if (trial){
-            if(trial > new Date() ){
+            if(trial < new Date() ){
                 info = "Your trial period is over. Sign up below.";
             }else {
                 info = "Your trial end date is " + (trial.getMonth() + 1) + '/' + trial.getDate() + '/' +  trial.getFullYear();
