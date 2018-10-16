@@ -26,9 +26,10 @@ user.transform = (data) => {
         let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
         result.id = data.id || 0;
         result.name = data.name || "New Friend";
+        result.greeting_text = "Welcome " + result.name;
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
-        result.created_at = data.created_at || new Date().toISOString();        
+        result.created_at = data.created_at || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
         result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";
@@ -76,11 +77,14 @@ user.getDefault = () =>{
             "status": null,
             "active_until": null,
             "type": "TRIAL",
-            "plan_name": "Free"
+            "plan_name": "Free",
+            "plan_text": null,
+            "plan_info": null
         }];
     let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
     result.id = 0;
     result.name = "New Friend";
+    result.greeting_text = "Welcome " + result.name;
     result.email = "";
     result.sign_in_count = 1;
     result.created_at = new Date().toISOString();
