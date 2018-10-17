@@ -25,8 +25,8 @@ user.transform = (data) => {
         }];
         let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
         result.id = data.id || 0;
-        result.name = data.name || " Friend";
-        result.greeting_text = "Welcome " + result.name;
+        result.name = data.name || "Friend";
+        result.greeting_text = user.timeGreeting(result.name);
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
         result.created_at = data.created_at || new Date().toISOString();
@@ -66,6 +66,21 @@ user.transform = (data) => {
 
 user.isPaid = (user) => {
         return user.subscriptions[0].plan_id == 2 || user.subscriptions[0].plan_id == 3;
+};
+
+user.timeGreeting =(name) =>{
+    let d = new Date();
+    let hrs = d.getHours();
+
+    if (hrs < 12) {
+       return 'Good Morning, ' + name;
+    }else if (hrs >= 12 && hrs <= 17) {
+        return 'Good Afternoon, '  + name;
+    }else if (hrs >= 17 && hrs <= 24) {
+        return 'Good Evening, ' + name;
+    } else {
+        return 'Welcome '+ name;
+    }
 };
 
 user.getDefault = () =>{
