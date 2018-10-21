@@ -69,7 +69,9 @@ user.isPaid = (user) => {
 };
 
 user.timeGreeting =(name) =>{
-    let d = new Date();
+    let n = new Date();
+    let d = new Date(n+" UTC");
+    console.log("current server time " + d.toString());
     let hrs = d.getHours();
 
     if (hrs < 12) {
