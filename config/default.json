@@ -2,6 +2,6 @@
   "url": "https://www.alotofpilates.com/",
   "host": "alop-experience-api.herokuapp.com",
   "logging": true,
-  "REDIS_CACHE_TIME": 0,
+  "REDIS_CACHE_TIME": 10,
   "REDISTOGO_URL": "redis://redistogo:92bdfd1e6cb8a52174b556e7e872aa44@cod.redistogo.com:11514"
 }

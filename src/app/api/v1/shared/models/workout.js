@@ -40,7 +40,7 @@ const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
 let workout = {};
 
 workout.get$ = (req, res) => {
-    let key = workout.getKeyFor(REDIS_WORKOUT_CACHE, req.headers);
+    //let key = workout.getKeyFor(REDIS_WORKOUT_CACHE, req.headers);
 
     const callWorkoutService$ = workoutService.get(req.headers)
                             .catch((error)=>{
@@ -84,7 +84,7 @@ workout.getLabel$ = () => {
 };
 
 workout.getFavorites$ = (req, res) =>{
-    let key = workout.getKeyFor(REDIS_FAV_CACHE, req.headers);
+    //let key = workout.getKeyFor(REDIS_FAV_CACHE, req.headers);
     return favoriteService.get(req.headers)
                 .catch((error) => {  
                     if (error.statusCode === 401){        
@@ -110,36 +110,36 @@ workout.getFavorites$ = (req, res) =>{
 };
 
 workout.getActivities$ = (req, res) =>{
-    let key = workout.getKeyFor(REDIS_ACTIVITY_CACHE, req.headers);
+    //let key = workout.getKeyFor(REDIS_ACTIVITY_CACHE, req.headers);
     const callTrackingService$ = trackingService.get(req.headers)
                             .catch((error)=>{
                                 return workout.getDefaultActivities$;
                             })                          
                             .map((data) => activityMapping.transform(data))
-                            .do((data) => {
-                                //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
-                            })
+                            // .do((data) => {                               
+                            //     client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                            // })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("Tracking Data Transform - Return Tracking default. Calling Tracking Service", error, tracker.requestID, "ERROR");
                                     return workout.getDefaultActivities$;
                             });
+    return Observable.merge(callTrackingService$);
+    // let cacheIsRetrieved$ = client.getCachedDataFor$(key)
+    //                             .filter((value) => value)
+    //                             .catch((error) => {                                       
+    //                                 loggingModel.logWithLabel("Tracking Data Transform - Return Tracking default. There was data in cache.", error, tracker.requestID, "ERROR");
+    //                                 return workout.getDefaultActivities$;
+    //                             });
 
-    let cacheIsRetrieved$ = client.getCachedDataFor$(key)
-                                .filter((value) => value)
-                                .catch((error) => {                                       
-                                    loggingModel.logWithLabel("Tracking Data Transform - Return Tracking default. There was data in cache.", error, tracker.requestID, "ERROR");
-                                    return workout.getDefaultActivities$;
-                                });
-
-    let cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
-                                .filter((value) => !value)                               
-                                .switchMap(() => callTrackingService$)
-                                .catch((error) => {                                   
-                                    loggingModel.logWithLabel("Tracking Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
-                                    return workout.getDefaultActivities$;
-                                });
+    // let cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+    //                             .filter((value) => !value)                               
+    //                             .switchMap(() => callTrackingService$)
+    //                             .catch((error) => {                                   
+    //                                 loggingModel.logWithLabel("Tracking Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
+    //                                 return workout.getDefaultActivities$;
+    //                             });
                                
-    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+    // return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
 
 };
 
@@ -147,9 +147,9 @@ workout.getDefaultActivities$ = () =>{
     return Observable.of(activityMapping.getDefault()); 
 };
 
-workout.getKeyFor = (key, headers) =>{
-    const { authorization } = headers;
-    return key + authorization;
-};
+// workout.getKeyFor = (key, headers) =>{
+//     const { authorization } = headers;
+//     return key + authorization;
+// };
 
 module.exports = workout;

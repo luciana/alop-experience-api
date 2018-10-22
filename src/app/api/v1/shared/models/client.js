@@ -16,11 +16,13 @@ const redis = require('redis'),
 const redis_url = configModule.get('REDISTOGO_URL');
 
 if (redis_url){
+    console.log("redis url", redis_url);    
 	var rtg   = require("url").parse(redis_url);
 	var client = redis.createClient(rtg.port, rtg.hostname);
 	client.auth(rtg.auth.split(":")[1]);
 }else{  
-	var client = redis.createClient();
+     console.log("redis url - create new client");
+    var client = redis.createClient({host : 'localhost', port : 6379});
 }
 
 client.on('error', (error)=>{

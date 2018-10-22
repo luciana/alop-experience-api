@@ -25,10 +25,10 @@ user.transform = (data) => {
         }];
         let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
         result.id = data.id || 0;
-        result.name = data.name || "Friend";
-        result.greeting_text = user.timeGreeting(result.name);
+        result.name = data.name || "Friend";        
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
+        result.greeting_text = user.countGreeting(result.sign_in_count, result.name);
         result.created_at = data.created_at || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
@@ -68,11 +68,18 @@ user.isPaid = (user) => {
         return user.subscriptions[0].plan_id == 2 || user.subscriptions[0].plan_id == 3;
 };
 
+user.countGreeting = (signInCount, name) => {
+    if (signInCount > 1) {
+        return "Welcome back, " + name;
+    } else {
+        return "Welcome " + name;
+    }
+};
+
 user.timeGreeting =(name) =>{
-    let n = new Date();
-    let d = new Date(n+" UTC");
-    console.log("current server time " + d.toString());
-    let hrs = d.getHours();
+    let n = new Date();   
+    console.log("current server time " + n.toString());
+    let hrs = n.getHours();
 
     if (hrs < 12) {
        return 'Good Morning, ' + name;
@@ -100,10 +107,10 @@ user.getDefault = () =>{
         }];
     let defaultBadgeImage = 'https://www.alotofpilates.com/assets/badges/badge4.png';
     result.id = 0;
-    result.name = " Friend";
-    result.greeting_text = "Welcome " + result.name;
+    result.name = " Friend";   
     result.email = "";
     result.sign_in_count = 1;
+    result.greeting_text = user.countGreeting(result.sign_in_count, result.name);
     result.created_at = new Date().toISOString();
     result.location = null;
     result.subscriptions = defaultSubs;

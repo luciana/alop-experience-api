@@ -18,13 +18,13 @@ const userService = require('../services/user'),
         loggingModel = require('../models/logging'),
         tracker = require('../middleware/tracker'),
         tokenInfoService = require('../services/tokenInfo');
-const REDIS_USER_CACHE = "alop-adapter-user";
+//const REDIS_USER_CACHE = "alop-adapter-user";
 
 let user = {};
 user.data = {};
 user.get$ = (req, res) => {
    
-    const key = user.getCacheKey(req.headers);
+    //const key = user.getCacheKey(req.headers);
     const callUserService$ = userService.get(req.headers)
                             //.do((d) => console.log("user service", d))
                             .catch((error)=>{
@@ -33,7 +33,9 @@ user.get$ = (req, res) => {
                             })                          
                             .map((data) => userMapping.transform(data))
                             // .do((data) => {
-                            //     //client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                            //     let key = REDIS_USER_CACHE +"-"+ data.id;
+                            //     console.log("KEEEDDD", key);
+                            //     client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
                             // })
                             .catch((error) => {                                  
                                     loggingModel.logWithLabel("User Data Transform - Return user default. Calling User Service", error, tracker.requestID, "ERROR");
@@ -51,7 +53,7 @@ user.get$ = (req, res) => {
 
     // const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
     //                             .filter((value) => !value)             
-    //                              .do((d) => console.log("did not got data from user caching about to call service", d))                    
+    //                              .do((d) => console.log("did not get data from user caching about to call service", d))                    
     //                             .switchMap(() => callUserService$)
     //                             .catch((error) => {                                   
     //                                 loggingModel.logWithLabel("User Data Transform - Return user default. There was not data in cache", error, tracker.requestID, "ERROR");
@@ -65,10 +67,12 @@ user.getDefault$ = () =>{
     return Observable.of(userMapping.getDefault());
 };
 
-user.getCacheKey = (header) =>{
-    const { authorization } = header;
-    return REDIS_USER_CACHE + authorization;
-};
+// user.getCacheKey = (header) =>{
+//     const { authorization } = header;
+//     let key = REDIS_USER_CACHE +"-"+ authorization.replace(/ /g,'');
+//     console.log("KEEE", key);
+//     return REDIS_USER_CACHE +"-"+ authorization.replace(/ /g,'');
+// };
 
 user.validateToken$ = (req, res)  => {
     const { authorization } = req.headers;

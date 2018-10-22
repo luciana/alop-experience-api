@@ -37,8 +37,8 @@ homeController.get = (req, res, next) =>{
                 .subscribe(
                     (value) => {
                         try{
-                            account = Object.assign(value, account);                            
-                        }catch(error){
+                            account = Object.assign(value, account);
+                        }catch(error){                            
                             let logEntry = "Home Subscriber Value Error Message: ";
                             let msg = { message: logEntry + error };
                             loggingModel.logWithLabel(logEntry, msg, tracker.requestID, "ERROR");
@@ -46,7 +46,8 @@ homeController.get = (req, res, next) =>{
                             res.json(msg);
                         }                        
                     },
-                    (error) => {                       
+                    (error) => {                
+                    console.log("ERR111", error);       
                         let logEntry = "Home Subscriber Error Message: ";
                         let status = 500;
                         if(error.statusCode && error.statusCode === 401){

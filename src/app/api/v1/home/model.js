@@ -19,18 +19,18 @@
 'use strict'
 require('rxjs/Rx');
 const Observable = require('rxjs/Observable').Observable,
-        client = require('../shared/models/client');
+        client = require('../shared/models/client'),
+        configModule = require('config');
 
 const   loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
         tracker = require('../shared/middleware/tracker'),
         user = require('../shared/models/user'),
         workout = require('../shared/models/workout'),
-        schedule = require('../schedule/model'),
-        meditation = require('../shared/models/meditation');
-
+        schedule = require('../schedule/model');
+        //meditation = require('../shared/models/meditation');
 let home = {};
-
+const REDIS_USER_CACHE = "alop-adapter-user";
 home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
     const s$ = u$               
@@ -42,10 +42,8 @@ home.defaultAccount$ = () =>{
             });
     //const w$ = workout.getDefault$();
     const a$ = workout.getDefaultActivities$();
-    const f$ = Observable.of({
-                        favorites: {}
-                    })
-    const m$ = meditation.getDefault$();
+    //const f$ = Observable.of({ favorites: {} });
+    //const m$ = meditation.getDefault$();
     return Observable.concat(a$, 
                                 Observable.forkJoin(b$, wl$, s$, u$)
                                 .concatMap(results => Observable.from(results))
@@ -66,13 +64,48 @@ home.getAccount$ = (req, res) => {
             });
     //const w$ = workout.get$(req, res);
     const a$ = workout.getActivities$(req, res);
-    const f$ = workout.getFavorites$(req, res);
-    const m$ = meditation.get$(req,res);
+    //const f$ = workout.getFavorites$(req, res);
+    //const m$ = meditation.get$(req,res);
 
-	return Observable.concat(a$, 
-                                Observable.forkJoin(b$, wl$, s$, u$)
-                                .concatMap(results => Observable.from(results))
-                                );
+	// return Observable.concat(a$, 
+ //                                Observable.forkJoin(b$, wl$, s$, u$)
+ //                                .concatMap(results => Observable.from(results))
+ //                                );
+
+    const key = home.getCacheKey(req.headers);
+    const liveCalls$ = Observable.forkJoin(a$,b$, wl$, s$, u$)
+                        .do((data)=> {
+                            if(data){      
+                                console.log("set cache key",key);                                                        
+                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+                            }                            
+                        })
+                        .concatMap(results => Observable.from(results));
+
+    const cacheIsRetrieved$ = client.getCachedDataFor$(key)
+                                .filter((value) => value)
+                                .do((d) => console.log("got data from cache"))
+                                .catch((error) => {                                       
+                                    loggingModel.logWithLabel("getAccount cached data for - There was data in cache.", error, tracker.requestID, "ERROR");
+                                    return Observable.of({});
+                                });
+
+    const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+                                .filter((value) => !value)             
+                                 .do((d) => console.log("did not get data from cache about to call live"))             
+                                .switchMap(() => liveCalls$)
+                                .catch((error) => {                                   
+                                    loggingModel.logWithLabel("getAccount cached data for - There was not data in cache", error, tracker.requestID, "ERROR");
+                                    return Observable.of({});
+                                });
+    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+
 };
 
+home.getCacheKey = (header) =>{
+    const { authorization } = header;
+    let key = REDIS_USER_CACHE +"-"+ authorization.replace(/ /g,'');
+    //console.log("KEEE", key);
+    return key;
+};
 module.exports = home;

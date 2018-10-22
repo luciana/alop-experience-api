@@ -8,8 +8,9 @@
 var app = require('./src/app/index');
 
 var port = process.env.PORT || 8080;
+var env = process.env.NODE_ENV || "production";
 var server = app.listen(port, function() {
-    console.log("server running on port", port);
+    console.log("server running on port", port + " - " + env);
 });
 server.on('error', function(err){
 	console.log("Generic error in Experience API - fix it!", err);
