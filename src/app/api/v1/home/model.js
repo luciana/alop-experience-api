@@ -30,7 +30,7 @@ const   loggingService = require('../shared/services/logging'),
         schedule = require('../schedule/model');
         //meditation = require('../shared/models/meditation');
 let home = {};
-const REDIS_USER_CACHE = "alop-adapter-user";
+//const REDIS_USER_CACHE = "alop-adapter-user";
 home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
     const s$ = u$               
@@ -67,45 +67,44 @@ home.getAccount$ = (req, res) => {
     //const f$ = workout.getFavorites$(req, res);
     //const m$ = meditation.get$(req,res);
 
-	// return Observable.concat(a$, 
- //                                Observable.forkJoin(b$, wl$, s$, u$)
- //                                .concatMap(results => Observable.from(results))
- //                                );
+	return Observable.concat(a$, 
+                                Observable.forkJoin(b$, wl$, s$, u$)
+                                .concatMap(results => Observable.from(results))
+                                );
 
-    const key = home.getCacheKey(req.headers);
-    const liveCalls$ = Observable.forkJoin(a$,b$, wl$, s$, u$)
-                        .do((data)=> {
-                            if(data){      
-                                console.log("set cache key",key);                                                        
-                                client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
-                            }                            
-                        })
-                        .concatMap(results => Observable.from(results));
+    // const key = home.getCacheKey(req.headers);
+    // const liveCalls$ = Observable.forkJoin(a$,b$, wl$, s$, u$)
+    //                     .do((data)=> {
+    //                         if(data){      
+    //                             console.log("set cache key",key);                                                        
+    //                             client.setex(key, configModule.get('REDIS_CACHE_TIME'), JSON.stringify(data));
+    //                         }                            
+    //                     })
+    //                     .concatMap(results => Observable.from(results));
 
-    const cacheIsRetrieved$ = client.getCachedDataFor$(key)
-                                .filter((value) => value)
-                                .do((d) => console.log("got data from cache"))
-                                .catch((error) => {                                       
-                                    loggingModel.logWithLabel("getAccount cached data for - There was data in cache.", error, tracker.requestID, "ERROR");
-                                    return Observable.of({});
-                                });
+    // const cacheIsRetrieved$ = client.getCachedDataFor$(key)
+    //                             .filter((value) => value)
+    //                             .do((d) => console.log("got data from cache"))
+    //                             .catch((error) => {                                       
+    //                                 loggingModel.logWithLabel("getAccount cached data for - There was data in cache.", error, tracker.requestID, "ERROR");
+    //                                 return Observable.of({});
+    //                             });
 
-    const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
-                                .filter((value) => !value)             
-                                 .do((d) => console.log("did not get data from cache about to call live"))             
-                                .switchMap(() => liveCalls$)
-                                .catch((error) => {                                   
-                                    loggingModel.logWithLabel("getAccount cached data for - There was not data in cache", error, tracker.requestID, "ERROR");
-                                    return Observable.of({});
-                                });
-    return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
+    // const cacheIsNotRetrieved$ =client.getCachedDataFor$(key)
+    //                             .filter((value) => !value)             
+    //                              .do((d) => console.log("did not get data from cache about to call live"))             
+    //                             .switchMap(() => liveCalls$)
+    //                             .catch((error) => {                                   
+    //                                 loggingModel.logWithLabel("getAccount cached data for - There was not data in cache", error, tracker.requestID, "ERROR");
+    //                                 return Observable.of({});
+    //                             });
+    // return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
 
 };
 
-home.getCacheKey = (header) =>{
-    const { authorization } = header;
-    let key = REDIS_USER_CACHE +"-"+ authorization.replace(/ /g,'');
-    //console.log("KEEE", key);
-    return key;
-};
+// home.getCacheKey = (header) =>{
+//     const { authorization } = header;
+//     let key = REDIS_USER_CACHE +"-"+ "614";
+//     return key;
+// };
 module.exports = home;

@@ -28,7 +28,7 @@ user.transform = (data) => {
         result.name = data.name || "Friend";        
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
-        result.greeting_text = user.countGreeting(result.sign_in_count, result.name);
+        result.greeting_text = user.timeGreeting(result.name);
         result.created_at = data.created_at || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
@@ -110,7 +110,7 @@ user.getDefault = () =>{
     result.name = " Friend";   
     result.email = "";
     result.sign_in_count = 1;
-    result.greeting_text = user.countGreeting(result.sign_in_count, result.name);
+    result.greeting_text = user.timeGreeting(result.name);
     result.created_at = new Date().toISOString();
     result.location = null;
     result.subscriptions = defaultSubs;
