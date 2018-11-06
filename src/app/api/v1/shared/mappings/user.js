@@ -78,7 +78,7 @@ user.countGreeting = (signInCount, name) => {
 
 user.timeGreeting =(name) =>{
     let n = new Date();   
-    console.log("current server time " + n.toString());
+    //console.log("current server time " + n.toString());
     let hrs = n.getHours();
 
     if (hrs < 12) {
