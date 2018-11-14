@@ -27,14 +27,16 @@ schedule.getList$ = () =>{
 
 schedule.getListById$ = (id) =>{
 	let results = {};	
-	results.workouts = schedule.getFiltered(id);
+	let n = (id % 2 == 0) ? 1 : 2;
+	results.workouts = schedule.getFiltered(n);
 	return Observable.of(results);	
 };
 
 schedule.getListByDate$ = (d) =>{
 	let results = {};
 	let id = schedule.getWeekId(d);
-	results.workouts = schedule.getFiltered(id);
+	let n = (id % 2 == 0) ? 1 : 2;
+	results.workouts = schedule.getFiltered(n);
 	return Observable.of(results);	
 };
 
