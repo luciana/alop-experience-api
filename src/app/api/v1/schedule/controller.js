@@ -45,7 +45,8 @@ scheduleController.getById = (req, res, next) =>{
     let account = {};
     //console.log("req query", req.query);
     let id = schedule.getWeekId(req.query);
-    schedule.getListById$(id)
+    let n = (id % 2 == 0) ? 1 : 2;
+    schedule.getListById$(n)
                 .subscribe(
                     (value) => {              
                         account = Object.assign(value, account);
