@@ -44,13 +44,13 @@ schedule.getFiltered = (id) => {
 	return JSON.parse(ALL_SCHEDULES)						
 						.filter((el) => {return (el.schedule_id == id) })						
 						.map((klass, index) => {							
-							// if (index % 2 == 0){
-							// 	klass.instructor_video_id = 4;
-							// 	klass.instructor_video_name = "Laura Locker";
-							// }else{
+							if (index % 2 == 0){
 								klass.instructor_video_id = 1;
 								klass.instructor_video_name = "Jodi Brinkman";
-							// }
+							}else{								
+								klass.instructor_video_id = 4;
+								klass.instructor_video_name = "Laura Locker";
+							}
 							return klass;
 						});	
 }
