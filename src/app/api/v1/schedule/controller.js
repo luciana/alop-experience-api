@@ -43,7 +43,7 @@ scheduleController.get = (req, res, next) =>{
 
 scheduleController.getById = (req, res, next) =>{
     let account = {};
-    //console.log("req query", req.query);
+    console.log("req query", req.query);
     let id = schedule.getWeekId(req.query);  
     schedule.getListById$(id)
                 .subscribe(
