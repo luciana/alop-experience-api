@@ -35,8 +35,8 @@ schedule.getListById$ = (id) =>{
 schedule.getListByDate$ = (d) =>{
 	let results = {};
 	let id = schedule.getWeekId(d);
-	let n = (id % 2 == 0) ? 1 : 2;
-	results.workouts = schedule.getFiltered(n);
+	//let n = (id % 2 == 0) ? 1 : 2;
+	results.workouts = schedule.getFiltered(id);
 	return Observable.of(results);	
 };
 
