@@ -61,7 +61,8 @@ home.getAccount$ = (req, res) => {
 
     const s$ = u$               
                 .map(params => params.user.created_at)                
-                .switchMap((d) =>  schedule.getListByDate$(d));
+                .switchMap((d) =>  schedule.getListByDate$(d))
+               
 
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
