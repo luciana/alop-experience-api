@@ -53,6 +53,11 @@ home.defaultAccount$ = () =>{
 
 home.getAccount$ = (req, res) => {
   	const u$ = user.get$(req, res);
+    let workoutClassLimit = 4; // default
+    if (req.query.wlimit){
+        workoutClassLimit = req.query.wlimit;
+    }
+    console.log("home workout limit", workoutClassLimit);
 
     const s$ = u$               
                 .map(params => params.user.created_at)                
