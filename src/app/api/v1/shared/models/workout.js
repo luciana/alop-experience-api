@@ -79,7 +79,7 @@ workout.getDefault$ = () =>{
 
 workout.getLabel$ = () => {
     return Observable.of({
-                 workout_label: "Classes selected for you today: "
+                 workout_label: "Your classes for this week: "
             });
 };
 
