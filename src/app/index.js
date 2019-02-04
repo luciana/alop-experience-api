@@ -21,6 +21,7 @@ app.use('/api/v1', require('./api/v1/home/router'));
 app.use('/api/v1', require('./api/v1/recommender/router'));
 app.use('/api/v1', require('./api/v1/recommender/workouts.router'));
 app.use('/api/v1', require('./api/v1/schedule/router'));
+app.use('/api/v1', require('./api/v1/productIdentifiers/router'));
 
 app.use((req, res) => {
 	res.status(404).json({message: "Not found"});
