@@ -16,6 +16,7 @@ user.transform = (data) => {
         let defaultSubs =  [{
             "id": 0,
             "plan_id": 1,
+            "product_identifier_id":"com.mypilatespal.MPPApp.subscription.all.access.monthly",   
             "status": null,
             "active_until": null,
             "type": "TRIAL",
@@ -32,17 +33,18 @@ user.transform = (data) => {
         result.created_at = data.created_at || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
-        result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";
+        result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";       
         var info = "";
         var planAction = "";
         var planActionId = 0;
-        const trial = new Date(data.trial_end_date);
+        const trial = new Date(data.trial_end_date);       
         if(user.isPaid(result)){
             const active_until =  new Date(result.subscriptions[0].active_until);
              if(active_until){
                 info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
                 planAction = "";
              }
+            const product_identifier_id = user.getiOSProductIdentifier(user);
         }else if (trial){
             if(trial < new Date() ){
                 info = "Your trial period is over.";
@@ -51,10 +53,12 @@ user.transform = (data) => {
             }
             planAction = "Become a member";
             planActionId = 1;
+            const product_identifier_id ="";
         }
         result.subscriptions[0].plan_action= planAction;
         result.subscriptions[0].plan_action_id= planActionId;
         result.subscriptions[0].plan_info = info;
+        result.subscriptions[0].product_identifier_id = product_identifier_id;
         result.badge_text = data.badge_text || 'Newbie Badge';
         result.badge_image = data.badge_image || defaultBadgeImage;
         result.favorites_count = data.favorites_count || 0;
@@ -66,6 +70,16 @@ user.transform = (data) => {
 
 user.isPaid = (user) => {
         return user.subscriptions[0].plan_id == 2 || user.subscriptions[0].plan_id == 3;
+};
+
+user.getiOSProductIdentifier = (user) => {
+    var product_identifier_id = "";
+    if (user.subscriptions[0].plan_id == 2) {
+        product_identifier_id = "com.mypilatespal.MPPApp.subscription.all.access.monthly";
+    }else if (user.subscriptions[0].plan_id == 3) {
+        product_identifier_id = "com.mypilatespal.MPPApp.subscription.all.access.annually";
+    }
+    return product_identifier_id;
 };
 
 user.countGreeting = (signInCount, name) => {
