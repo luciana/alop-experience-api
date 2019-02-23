@@ -78,8 +78,7 @@ schedule.getWeekId = (userDate) => {
 
 	    if(id == 0){
 	    	id = 1;
-	    };	   
-	    console.log("shedule id", id);
+	    };	   	    
 	    return id;
 
 	}catch(error){

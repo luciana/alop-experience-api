@@ -1,7 +1,7 @@
 /**
  Provide Api for Home
 
-    User model - returns observables
+    Product Identifier model - returns observables
 
 **/
 
@@ -14,7 +14,9 @@ let productIdentifier = {};
 
 
 productIdentifier.getList$ = () =>{
-	return Observable.of(JSON.parse(ALL_PRODUCT_IDENTIFIERS_FROM_APPSTORE));
+    let results = {};		
+    results.availableProductIdenfitiers = JSON.parse(ALL_PRODUCT_IDENTIFIERS_FROM_APPSTORE);
+    return 	Observable.of(results);
 };
 
 

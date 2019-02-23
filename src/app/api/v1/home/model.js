@@ -27,7 +27,8 @@ const   loggingService = require('../shared/services/logging'),
         tracker = require('../shared/middleware/tracker'),
         user = require('../shared/models/user'),
         workout = require('../shared/models/workout'),
-        schedule = require('../schedule/model');
+        schedule = require('../schedule/model'),
+        productIdentifier = require('../productIdentifiers/model');
         //meditation = require('../shared/models/meditation');
 let home = {};
 //const REDIS_USER_CACHE = "alop-adapter-user";
@@ -36,6 +37,7 @@ home.defaultAccount$ = () =>{
     const s$ = u$               
                 .map(params => params.user.created_at)                
                 .switchMap((d) =>  schedule.getListByDate$(d));
+    const pi$ = productIdentifier.getList$();
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
                  banner_image: "https://s3.amazonaws.com/s3-us-alop-images/laura_picture_spine_stretch.jpeg"
@@ -45,7 +47,7 @@ home.defaultAccount$ = () =>{
     //const f$ = Observable.of({ favorites: {} });
     //const m$ = meditation.getDefault$();
     return Observable.concat(a$, 
-                                Observable.forkJoin(b$, wl$, s$, u$)
+                                Observable.forkJoin(pi$, b$, wl$, s$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 
@@ -56,13 +58,12 @@ home.getAccount$ = (req, res) => {
     let workoutClassLimit = 4; // default
     if (req.query.wlimit){
         workoutClassLimit = req.query.wlimit;
-    }
-    console.log("home workout limit", workoutClassLimit);
-
+    }   
     const s$ = u$               
                 .map(params => params.user.created_at)                
                 .switchMap((d) =>  schedule.getListByDate$(d))
-               
+    
+    const pi$ = productIdentifier.getList$();
 
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
@@ -74,7 +75,7 @@ home.getAccount$ = (req, res) => {
     //const m$ = meditation.get$(req,res);
 
 	return Observable.concat(a$, 
-                                Observable.forkJoin(b$, wl$, s$, u$)
+                                Observable.forkJoin(pi$, b$, wl$, s$,  u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 
