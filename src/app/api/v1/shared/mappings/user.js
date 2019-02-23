@@ -44,7 +44,7 @@ user.transform = (data) => {
                 info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
                 planAction = "";
              }
-            const product_identifier_id = user.getiOSProductIdentifier(user);
+            //const product_identifier_id = user.getiOSProductIdentifier(user);
         }else if (trial){
             if(trial < new Date() ){
                 info = "Your trial period is over.";
@@ -53,12 +53,12 @@ user.transform = (data) => {
             }
             planAction = "Become a member";
             planActionId = 1;
-            const product_identifier_id ="";
+            //const product_identifier_id ="";
         }
         result.subscriptions[0].plan_action= planAction;
         result.subscriptions[0].plan_action_id= planActionId;
         result.subscriptions[0].plan_info = info;
-        result.subscriptions[0].product_identifier_id = product_identifier_id;
+        //result.subscriptions[0].product_identifier_id = product_identifier_id;
         result.badge_text = data.badge_text || 'Newbie Badge';
         result.badge_image = data.badge_image || defaultBadgeImage;
         result.favorites_count = data.favorites_count || 0;
@@ -72,15 +72,15 @@ user.isPaid = (user) => {
         return user.subscriptions[0].plan_id == 2 || user.subscriptions[0].plan_id == 3;
 };
 
-user.getiOSProductIdentifier = (user) => {
-    var product_identifier_id = "";
-    if (user.subscriptions[0].plan_id == 2) {
-        product_identifier_id = "com.mypilatespal.MPPApp.subscription.all.access.monthly";
-    }else if (user.subscriptions[0].plan_id == 3) {
-        product_identifier_id = "com.mypilatespal.MPPApp.subscription.all.access.annually";
-    }
-    return product_identifier_id;
-};
+// user.getiOSProductIdentifier = (user) => {
+//     var product_identifier_id = "";
+//     if (user.subscriptions[0].plan_id == 2) {
+//         product_identifier_id = "com.mypilatespal.MPPApp.subscription.all.access.monthly";
+//     }else if (user.subscriptions[0].plan_id == 3) {
+//         product_identifier_id = "com.mypilatespal.MPPApp.subscription.all.access.annually";
+//     }
+//     return product_identifier_id;
+// };
 
 user.countGreeting = (signInCount, name) => {
     if (signInCount > 1) {
