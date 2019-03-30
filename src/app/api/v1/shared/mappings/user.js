@@ -39,8 +39,9 @@ user.transform = (data) => {
         var planActionId = 0;
         const trial = new Date(data.trial_end_date);       
         if(user.isPaid(result)){
-            const active_until =  new Date(result.subscriptions[0].active_until);            
-            if(isNaN(new Date(active_until))){
+            const active_until =  new Date(result.subscriptions[0].active_until);     
+            console.log("active until value" , result.subscriptions[0].active_until);       
+            if(active_until!= null){
                 info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
                 planAction = "";
             }else{
