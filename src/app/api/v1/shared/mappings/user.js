@@ -32,26 +32,35 @@ user.transform = (data) => {
         result.created_at = data.created_at || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
-        result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";
+        result.subscriptions[0].plan_text = "Your plan is the " + result.subscriptions[0].plan_name + " Plan";       
         var info = "";
         var planAction = "";
         var planActionId = 0;
+        var daysLeftOnOffer = 0;
         const trial = new Date(data.trial_end_date);
+        var offer_end = trial;
         if(user.isPaid(result)){
             const active_until =  new Date(result.subscriptions[0].active_until);
              if(active_until){
                 info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
                 planAction = "";
              }
+
         }else if (trial){
             if(trial < new Date() ){
                 info = "Your trial period is over.";
             }else {
                 info = "Your trial end date is " + (trial.getMonth() + 1) + '/' + trial.getDate() + '/' +  trial.getFullYear();
+                var diff = Date.parse( trial ) - Date.now() ;                
+                if ( diff ) {
+                    daysLeftOnOffer = (Math.floor(( diff ) / 86400000)) + 1;
+                }                 
             }
             planAction = "Become a member";
             planActionId = 1;
         }
+        result.subscriptions[0].offer_end = offer_end;
+        result.subscriptions[0].days_left_on_offer = daysLeftOnOffer;
         result.subscriptions[0].plan_action= planAction;
         result.subscriptions[0].plan_action_id= planActionId;
         result.subscriptions[0].plan_info = info;
