@@ -29,7 +29,7 @@ user.transform = (data) => {
         result.name = data.name || "Friend";        
         result.email = data.email || "";
         result.sign_in_count = data.sign_in_count || 1;
-        result.greeting_text = "Join us for LIVE pilates classes on ALotOfPilates.com"; 
+        result.greeting_text = user.timeGreeting(result.name);
         result.created_at = data.created_at || new Date().toISOString();
         result.location = data.location || null;
         result.subscriptions = data.subscriptions || defaultSubs;
@@ -42,7 +42,7 @@ user.transform = (data) => {
         var offer_end = trial;
         if(user.isPaid(result)){
             const active_until =  new Date(result.subscriptions[0].active_until);     
-            //console.log("active until value" , result.subscriptions[0].active_until);       
+            console.log("active until value" , result.subscriptions[0].active_until);       
             if(result.subscriptions[0].active_until != null){
                 info = "Subscription active until " + (active_until.getMonth() + 1) + '/' + active_until.getDate() + '/' +  active_until.getFullYear();
                 planAction = "";
@@ -135,7 +135,7 @@ user.getDefault = () =>{
     result.name = " Friend";   
     result.email = "";
     result.sign_in_count = 1;
-    result.greeting_text = "Join us for LIVE pilates classes on alotofpilates.com"; //user.timeGreeting(result.name);
+    result.greeting_text = user.timeGreeting(result.name);
     result.created_at = new Date().toISOString();
     result.location = null;
     result.subscriptions = defaultSubs;
