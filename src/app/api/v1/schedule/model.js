@@ -71,8 +71,8 @@ schedule.getWeekId = (userDate) => {
 	
 	try{
 		let created_at = new Date(userDate.d);		
-			console.log("user date - created_at", created_at);
-	    let cutoff_date = new Date("2018-09-02T00:00:00.000Z");
+			console.log("user date - created_at", userDate.d);
+	    let cutoff_date = new Date("2019-09-02T00:00:00.000Z");
 	    if ( created_at > cutoff_date){
 	        cutoff_date = created_at;
 	    }	   
