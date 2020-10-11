@@ -70,7 +70,8 @@ schedule.getWeekId = (userDate) => {
 	let id = 1;
 	
 	try{
-		let created_at = new Date(userDate.d);		
+		let created_at = new Date(userDate);	
+		console.log(`USER TRACKING INFO CREATED_AT:`, created_at);
 		let cutoff_date = new Date("2020-09-02T00:00:00.000Z");
 		
 	    if ( created_at > cutoff_date){
@@ -79,7 +80,7 @@ schedule.getWeekId = (userDate) => {
 		console.log("user date - cutoff_date", cutoff_date);
 	    let today = new Date();    
 	    let weeksBtw = Math.floor(Math.abs(cutoff_date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 7));
-		   console.log("user date  - weeksBtw", weeksBtw);		   
+		console.log("USER TRACKING INFO SCHEDULE WEEK", weeksBtw);	   
 	    if ((weeksBtw) && ( weeksBtw > SCHEDULE_MAX )){
 	        id = weeksBtw % SCHEDULE_MAX;
 	    }else{

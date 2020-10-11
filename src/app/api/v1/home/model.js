@@ -34,7 +34,8 @@ let home = {};
 //const REDIS_USER_CACHE = "alop-adapter-user";
 home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
-    const s$ = u$               
+    const s$ = u$ 
+                .do(val => console.log(`USER TRACKING INFO ID (default): ${val.user.id}`))                   
                 .map(params => params.user.created_at)                
                 .switchMap((d) =>  schedule.getListByDate$(d));
     const pi$ = productIdentifier.getList$();
@@ -60,7 +61,7 @@ home.getAccount$ = (req, res) => {
         workoutClassLimit = req.query.wlimit;
     }   
     const s$ = u$  
-                .do(val => console.log(`USER ID INFO: ${val.user.id}`))         
+                .do(val => console.log(`USER TRACKING INFO ID: ${val.user.id}`))                             
                 .map(params => params.user.created_at)                
                 .switchMap((d) =>  schedule.getListByDate$(d))
     
