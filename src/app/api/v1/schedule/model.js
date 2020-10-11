@@ -71,14 +71,15 @@ schedule.getWeekId = (userDate) => {
 	
 	try{
 		let created_at = new Date(userDate.d);		
-			console.log("user date - created_at", userDate.d);
-	    let cutoff_date = new Date("2019-09-02T00:00:00.000Z");
+		let cutoff_date = new Date("2020-09-02T00:00:00.000Z");
+		
 	    if ( created_at > cutoff_date){
 	        cutoff_date = created_at;
-	    }	   
+		}	   
+		console.log("user date - cutoff_date", cutoff_date);
 	    let today = new Date();    
 	    let weeksBtw = Math.floor(Math.abs(cutoff_date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 7));
-	   	console.log("user date  - cutoff_date", cutoff_date);
+		   console.log("user date  - weeksBtw", weeksBtw);		   
 	    if ((weeksBtw) && ( weeksBtw > SCHEDULE_MAX )){
 	        id = weeksBtw % SCHEDULE_MAX;
 	    }else{

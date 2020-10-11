@@ -59,7 +59,8 @@ home.getAccount$ = (req, res) => {
     if (req.query.wlimit){
         workoutClassLimit = req.query.wlimit;
     }   
-    const s$ = u$               
+    const s$ = u$  
+                .do(val => console.log(`USER ID INFO: ${val.user.id}`))         
                 .map(params => params.user.created_at)                
                 .switchMap((d) =>  schedule.getListByDate$(d))
     
