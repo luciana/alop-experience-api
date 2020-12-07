@@ -22,6 +22,7 @@ const loggingService = require('../shared/services/logging'),
 let homeController = {};
 
 homeController.get = (req, res, next) =>{
+    console.log('CLIENT CALLS /api/v1/home');
      let account = {};
     const validate$ = user.validateToken$(req, res);
 

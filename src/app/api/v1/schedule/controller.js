@@ -20,6 +20,7 @@ const loggingService = require('../shared/services/logging'),
 let scheduleController = {};
 
 scheduleController.get = (req, res, next) =>{
+    console.log('CLIENT CALLS /api/v1/schedules');
     let account = {};                    
     schedule.getList$()
                 .subscribe(
@@ -40,10 +41,9 @@ scheduleController.get = (req, res, next) =>{
                 );
 };
 
-
 scheduleController.getById = (req, res, next) =>{
     let account = {};
-    console.log("req query", req.query);
+    console.log('CLIENT CALLS /api/v1/schedule with req query' + req.query);
     let id = schedule.getWeekId(req.query);  
     schedule.getListById$(id)
                 .subscribe(
