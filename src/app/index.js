@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
+app.disable('etag');
 app.use('/api/v1', require('./api/v1/home/router'));
 app.use('/api/v1', require('./api/v1/recommender/router'));
 app.use('/api/v1', require('./api/v1/recommender/workouts.router'));
