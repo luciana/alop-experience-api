@@ -104,17 +104,18 @@ user.countGreeting = (signInCount, name) => {
 user.timeGreeting =(name) =>{
     let n = new Date();   
     //console.log("current server time " + n.toString());
-    let hrs = n.getHours();
+    // let hrs = n.getHours();
 
-    if (hrs < 12) {
-       return 'Good Morning, ' + name;
-    }else if (hrs >= 12 && hrs <= 17) {
-        return 'Good Afternoon, '  + name;
-    }else if (hrs >= 17 && hrs <= 24) {
-        return 'Good Evening, ' + name;
-    } else {
-        return 'Welcome '+ name;
-    }
+    // if (hrs < 12) {
+    //    return 'Good Morning, ' + name;
+    // }else if (hrs >= 12 && hrs <= 17) {
+    //     return 'Good Afternoon, '  + name;
+    // }else if (hrs >= 17 && hrs <= 24) {
+    //     return 'Good Evening, ' + name;
+    // } else {
+    //     return 'Welcome '+ name;
+    // }
+    return 'Let\' get started '+ name;
 };
 
 user.getDefault = () =>{
