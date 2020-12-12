@@ -41,7 +41,7 @@ home.defaultAccount$ = () =>{
     const pi$ = productIdentifier.getList$();
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
-                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/icon.png"
+                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-arms-up.jpg"
             });
     //const w$ = workout.getDefault$();
     const a$ = workout.getDefaultActivities$();
@@ -69,7 +69,7 @@ home.getAccount$ = (req, res) => {
 
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
-                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/icon.png"
+                 banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-arms-up.jpg"
             });
     //const w$ = workout.get$(req, res);
     const a$ = workout.getActivities$(req, res);
