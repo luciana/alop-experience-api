@@ -31,6 +31,7 @@ const workoutService = require('../services/workout'),
     favoriteService = require('../services/favorite'),
     favoriteMapping = require('../mappings/favorite'),
     tracker = require('../middleware/tracker');
+    
 
 const REDIS_CACHE_TIME = configModule.get('REDIS_CACHE_TIME');
 const REDIS_WORKOUT_CACHE = "alop-adapter-workout";
@@ -38,6 +39,7 @@ const REDIS_FAV_CACHE = "alop-adapter-favorites";
 const REDIS_ACTIVITY_CACHE = "alop-adapter-activity";
 
 let workout = {};
+
 
 workout.get$ = (req, res) => {
     //let key = workout.getKeyFor(REDIS_WORKOUT_CACHE, req.headers);
@@ -77,9 +79,13 @@ workout.getDefault$ = () =>{
     return Observable.of(workoutMapping.getDefault());
 };
 
-workout.getLabel$ = () => {
+workout.getLabel$ = (ALL_SCHEDULES_TEST_ID) => {
+    let label = "New classes shown every week!  ";
+    if (ALL_SCHEDULES_TEST_ID =="ALL_SCHEDULES_TEST_B"){
+		label = "Enjoy a variety of classes! ";
+	}
     return Observable.of({
-                 workout_label: "New classes show every week!  "
+                 workout_label: label
             });
 };
 
