@@ -59,7 +59,6 @@ home.getAccount$ = (req, res) => {
   	const u$ = user.get$(req, res);
     let workoutClassLimit = 4; // default    
     let ALL_SCHEDULES_TEST_ID = abService.get_schedule_test();
-    console.log("calling ALL_SCHEDULES_TEST_ID from workout get account", ALL_SCHEDULES_TEST_ID);
     if (req.query.wlimit){
         workoutClassLimit = req.query.wlimit;
     }   
