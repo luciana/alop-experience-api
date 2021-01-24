@@ -115,7 +115,7 @@ user.timeGreeting =(name) =>{
     // } else {
     //     return 'Welcome '+ name;
     // }
-    return 'Let\' get started '+ name;
+    return 'Let\'s get started '+ name;
 };
 
 user.getDefault = () =>{
