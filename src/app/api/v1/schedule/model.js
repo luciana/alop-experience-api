@@ -48,10 +48,10 @@ schedule.getListByDate$ = (d) =>{
 	return Observable.of(results);	
 };
 
-schedule.getFiltered = (id, test ="ALL_SCHEDULES_TEST_A") => {
+schedule.getFiltered = (id) => {
 	
 	
-	return JSON.parse(schedule.getAllSchedules(test))		
+	return JSON.parse(ALL_SCHEDULES_B)		
 						.filter((el) => {return (el.schedule_id == id) })												
 						.map((klass, index) => {							
 							klass.duration = schedule.getActualTime(klass.audio_time);
@@ -70,18 +70,12 @@ schedule.getActualTime = (klass_seconds) => {
 	return Math.floor(klass_seconds / 60) + " min";
 }
 
-schedule.getAllSchedules = (test) => {
-	let schedule = ALL_SCHEDULES_A;
-	if (test == "ALL_SCHEDULES_TEST_B"){
-		schedule = ALL_SCHEDULES_B
-	}
-	return schedule;
-}
-
-schedule.getWeekId = (userDate,test ="ALL_SCHEDULES_TEST_A") => {
-	if ( test == 'ALL_SCHEDULES_TEST_B'){
+//this function was used to show select only one schedule in the A test
+//in the B test, it is just one schedule - 0
+schedule.getWeekId = (userDate) => {
+	
 		return 0;
-	}
+	/*
 	let id = 1;
 	
 	try{
@@ -111,6 +105,7 @@ schedule.getWeekId = (userDate,test ="ALL_SCHEDULES_TEST_A") => {
 		console.log("ERROR GETTING WEEK ID FOR SCHEDULE, RETURN DEFAULT", error);
 		return 1;
 	}
+	*/
 }
 
 

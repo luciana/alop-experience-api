@@ -79,11 +79,8 @@ workout.getDefault$ = () =>{
     return Observable.of(workoutMapping.getDefault());
 };
 
-workout.getLabel$ = (ALL_SCHEDULES_TEST_ID) => {
-    let label = "New classes shown every week!  ";
-    if (ALL_SCHEDULES_TEST_ID =="ALL_SCHEDULES_TEST_B"){
-		label = "Enjoy a variety of classes! ";
-	}
+workout.getLabel$ = () => {
+    let label = "Enjoy a variety of classes!  ";
     return Observable.of({
                  workout_label: label
             });

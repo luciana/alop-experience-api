@@ -17,18 +17,19 @@ const loggingService = require('../shared/services/logging'),
         loggingModel = require('../shared/models/logging'),
         tracker = require('../shared/middleware/tracker'),
         user = require('../shared/models/user'),
-        home = require('./model.js'),
-        abService = require('../shared/services/abTest');
+        home = require('./model.js');
+       // abService = require('../shared/services/abTest');
 
 let homeController = {};
 
-homeController.getA = (req, res, next) =>{
-   abService.set_schedule_test("ALL_SCHEDULES_TEST_A");
-   homeController.get(req, res, next);
-};
+// AB test completed - B won
+//  homeController.getA = (req, res, next) =>{
+//    abService.set_schedule_test("ALL_SCHEDULES_TEST_A");
+//    homeController.get(req, res, next);
+// };
 
-homeController.getB = (req, res, next) =>{
-    abService.set_schedule_test("ALL_SCHEDULES_TEST_B");
+homeController.get = (req, res, next) =>{
+   // abService.set_schedule_test("ALL_SCHEDULES_TEST_B");
     homeController.get(req, res, next);
  };
 

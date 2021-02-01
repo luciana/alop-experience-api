@@ -28,8 +28,8 @@ const   loggingService = require('../shared/services/logging'),
         user = require('../shared/models/user'),
         workout = require('../shared/models/workout'),
         schedule = require('../schedule/model'),
-        productIdentifier = require('../productIdentifiers/model'),
-        abService = require('../shared/services/abTest');
+        productIdentifier = require('../productIdentifiers/model');
+        //abService = require('../shared/services/abTest');
         //meditation = require('../shared/models/meditation');
 let home = {};
 //const REDIS_USER_CACHE = "alop-adapter-user";
@@ -58,22 +58,22 @@ home.defaultAccount$ = () =>{
 home.getAccount$ = (req, res) => {
   	const u$ = user.get$(req, res);
     let workoutClassLimit = 4; // default    
-    let ALL_SCHEDULES_TEST_ID = abService.get_schedule_test();
+    //let ALL_SCHEDULES_TEST_ID = abService.get_schedule_test();
     if (req.query.wlimit){
         workoutClassLimit = req.query.wlimit;
     }   
-    const test$ = Observable.of(abService.get_schedule_test());
+    //const test$ = Observable.of(abService.get_schedule_test());
     const s$ = u$  
                 .do(val => console.log(`USER TRACKING INFO ID: ${val.user.id}`))                             
                 //.map(params => params.user.created_at)                            
-                .map(params => ({user_date: params.user.created_at, test: ALL_SCHEDULES_TEST_ID})  )
+                .map(params => ({user_date: params.user.created_at})  )
                 .switchMap((d) =>  schedule.getListByDate$(d))
     
     
     
     const pi$ = productIdentifier.getList$();
 
-    const wl$ = workout.getLabel$(ALL_SCHEDULES_TEST_ID);
+    const wl$ = workout.getLabel$();
     const b$ = Observable.of({
                  banner_image: "https://s3.amazonaws.com/s3-us-alop-images/men-arms-up.jpg"
             });

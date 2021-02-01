@@ -20,8 +20,8 @@
 
 const router = require('express').Router(),
     home = require('./controller'),
-    tracker = require('../shared/middleware/tracker'),
-    ab = require('../shared/middleware/ab');
+    tracker = require('../shared/middleware/tracker')
+   // ab = require('../shared/middleware/ab'); //this is a framework for AB test
 
 
 router.use((req, res, next) => {
@@ -31,9 +31,9 @@ router.use((req, res, next) => {
     next();
 });
 
-const homeAB = ab();
+//const homeAB = ab();
 
-router.get('/home', homeAB('ALL_SCHEDULES_TEST_A'), tracker.trackSession, home.getA);
-router.get('/home', homeAB('ALL_SCHEDULES_TEST_B'), tracker.trackSession, home.getB);
+//router.get('/home', homeAB('ALL_SCHEDULES_TEST_A'), tracker.trackSession, home.getA);
+router.get('/home', tracker.trackSession, home.get);
 
 module.exports = router;
