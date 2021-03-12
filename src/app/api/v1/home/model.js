@@ -33,12 +33,14 @@ const   loggingService = require('../shared/services/logging'),
         //meditation = require('../shared/models/meditation');
 let home = {};
 //const REDIS_USER_CACHE = "alop-adapter-user";
+
 home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
     const s$ = u$ 
                 .do(val => console.log(`USER TRACKING INFO ID (default): ${val.user.id}`))                   
-                .map(params => params.user.created_at)                             
-                .switchMap((d) =>  schedule.getListByDate$(d));
+                //.map(params => params.user.created_at)                             
+                //.switchMap(() =>  Observable.of(schedule.getDefault()));
+    const ww$ = Observable.of(schedule.getDefault());
     const pi$ = productIdentifier.getList$();
     const wl$ = workout.getLabel$();
     const b$ = Observable.of({
@@ -49,7 +51,7 @@ home.defaultAccount$ = () =>{
     //const f$ = Observable.of({ favorites: {} });
     //const m$ = meditation.getDefault$();
     return Observable.concat(a$, 
-                                Observable.forkJoin(pi$, b$, wl$, s$, u$)
+                                Observable.forkJoin(ww$, pi$, b$, wl$, s$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 
@@ -66,10 +68,10 @@ home.getAccount$ = (req, res) => {
     const s$ = u$  
                 .do(val => console.log(`USER TRACKING INFO ID: ${val.user.id}`))                             
                 //.map(params => params.user.created_at)                            
-                .map(params => ({user_date: params.user.created_at})  )
-                .switchMap((d) =>  schedule.getListByDate$(d))
+               // .map(params => ({user_date: params.user.created_at})  )
+                //.switchMap(() =>  workout.getSchedule$(req, res))
     
-    
+    const ww$ = workout.getSchedule$(req, res);
     
     const pi$ = productIdentifier.getList$();
 
@@ -83,7 +85,7 @@ home.getAccount$ = (req, res) => {
     //const m$ = meditation.get$(req,res);
 
 	return Observable.concat(a$, 
-                                Observable.forkJoin(pi$, b$, wl$, s$,  u$)
+                                Observable.forkJoin(ww$, pi$, b$, wl$, s$,  u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 

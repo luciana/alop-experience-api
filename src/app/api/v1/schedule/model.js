@@ -20,7 +20,12 @@ const SCHEDULE_MAX = 25;
 let schedule = {};
 
 schedule.getDefault = () => {
-	return JSON.parse(ALL_SCHEDULES_B);
+
+	let results = {}
+	let result = JSON.parse(ALL_SCHEDULES_B);
+
+	results.workouts = result;
+	return results;
 }
 
 schedule.getList$ = () =>{

@@ -39,8 +39,8 @@ workout.transformLimited = (data) =>{
 };
 
 workout.transformSchedule = (data) =>{  	 
-	
-	return data.map((item) => {
+	let results = [];
+	let result = data.map((item) => {
 			var result = {};
 			var i = item.id;
 			result.id = i;
@@ -53,6 +53,9 @@ workout.transformSchedule = (data) =>{
 			result.concentration = item.concentration;	
 			return result;
 	});
+
+	results.workouts = result;
+	return results;
 
 };
 
