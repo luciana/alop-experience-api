@@ -1,4 +1,10 @@
-This is a NodeJS/ExpressJS Adapter REST API. It orchestrates multiple calls to backend business APIs and returns a single contract to a client. The application uses ReactiveX pattern with rx.js
+
+
+## Experience API for A Lot Of Pilates iOS app
+This is a NodeJS/ExpressJS Adapter REST API. It orchestrates multiple calls from the A Lot Of Pilates iOS apps to the A Lot Of Pilates backend business APIs and returns a single contract to a client. 
+
+
+<!--- 
 
 ---------------
 
@@ -56,3 +62,4 @@ heroku container:login
 
 
 
+-->
