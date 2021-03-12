@@ -38,8 +38,8 @@ home.defaultAccount$ = () =>{
     const u$ = user.getDefault$();
     const s$ = u$ 
                 .do(val => console.log(`USER TRACKING INFO ID (default): ${val.user.id}`))                   
-                .map(params => params.user.created_at)                             
-                .switchMap((d) =>  schedule.getListByDate$(d));
+                // .map(params => params.user.created_at)                             
+                // .switchMap((d) =>  schedule.getListByDate$(d));
     const ww$ = Observable.of(schedule.getDefault());
     const pi$ = productIdentifier.getList$();
     const wl$ = workout.getLabel$();
@@ -51,7 +51,7 @@ home.defaultAccount$ = () =>{
     //const f$ = Observable.of({ favorites: {} });
     //const m$ = meditation.getDefault$();
     return Observable.concat(a$, 
-                                Observable.forkJoin(pi$, b$, wl$, s$, u$)
+                                Observable.forkJoin(pi$, b$, wl$, s$, ww$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 
@@ -67,8 +67,8 @@ home.getAccount$ = (req, res) => {
     //const test$ = Observable.of(abService.get_schedule_test());
     const s$ = u$  
                 .do(val => console.log(`USER TRACKING INFO ID: ${val.user.id}`))                             
-                .map(params => ({user_date: params.user.created_at})  )
-                .switchMap((d) =>  schedule.getListByDate$(d))
+                // .map(params => ({user_date: params.user.created_at})  )
+                // .switchMap((d) =>  schedule.getListByDate$(d))
 
     
     const ww$ = workout.getSchedule$(req, res);
@@ -85,7 +85,7 @@ home.getAccount$ = (req, res) => {
     //const m$ = meditation.get$(req,res);
 
 	return Observable.concat(a$, 
-                                Observable.forkJoin(pi$, b$, wl$, s$,  u$)
+                                Observable.forkJoin(pi$, b$, wl$, s$,  ww$, u$)
                                 .concatMap(results => Observable.from(results))
                                 );
 

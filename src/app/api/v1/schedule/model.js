@@ -22,8 +22,18 @@ let schedule = {};
 schedule.getDefault = () => {
 
 	let results = {}
-	let result = JSON.parse(ALL_SCHEDULES_B);
-
+	let result =  JSON.parse(ALL_SCHEDULES_B)						
+						.map((klass, index) => {							
+							klass.duration = schedule.getActualTime(klass.audio_time);
+							if (index % 2 == 0){
+								klass.instructor_video_id = 1;
+								klass.instructor_video_name = "Jodi Brinkman";
+							}else{								
+								klass.instructor_video_id = 4;
+								klass.instructor_video_name = "Laura Locker";
+							}
+							return klass;
+						});	
 	results.workouts = result;
 	return results;
 }
