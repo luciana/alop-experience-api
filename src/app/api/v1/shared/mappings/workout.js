@@ -38,6 +38,24 @@ workout.transformLimited = (data) =>{
 
 };
 
+workout.transformSchedule = (data) =>{  	 
+	
+	return data.map((item) => {
+			var result = {};
+			var i = item.id;
+			result.id = i;
+			result.title = item.title;	
+			result.duration_id = item.duration_id;	
+			result.audio_time = item.audio_time;	
+			result.schedule_id = 0;
+			result.duration = item.duration;	
+			result.concentrations_id = item.concentrations_id;			
+			result.concentration = item.concentration;	
+			return result;
+	});
+
+};
+
 workout.getDefault = () => {
 	return JSON.parse('{"workouts": [{"category": "Pilates","description": "","duration": "10-20 minutes","id": 530,"instructor_name": "Jodi Brinkman","instructor_path": "https://www.alotofpilates.com/instructors/1","title": "Basic Beginner Pilates Class"},{"category": "Stretching","description": "","duration": "10-20 minutes","id": 524,"instructor_name": "Colleen McGill","instructor_path": "https://www.alotofpilates.com/instructors/2","title": "Stretch and Breathe"},{"category": "Pilates","description": "","duration": "10-20 minutes","id": 654,"instructor_name": "Colleen McGill","instructor_path": "https://www.alotofpilates.com/instructors/2","title": "Simple and Effective"},{"category": "Power Pilates","description": "","duration": "10-20 minutes","id": 519,"instructor_name": "Colleen McGill","instructor_path": "https://www.alotofpilates.com/instructors/2","title": "Power Core"}]}');
 };

@@ -18,6 +18,11 @@ const ALL_SCHEDULES_B  = '[{    "id": 526,    "title": "Quick Stretch",    "dura
 
 const SCHEDULE_MAX = 25;
 let schedule = {};
+
+schedule.getDefault = () => {
+	return JSON.parse(ALL_SCHEDULES_B);
+}
+
 schedule.getList$ = () =>{
 	let results = {};
 	let ALL_SCHEDULES = schedule.getAllSchedules();

@@ -28,6 +28,7 @@ const workoutService = require('../services/workout'),
     activityMapping = require('../mappings/activity'),
     loggingService = require('../services/logging'),
     loggingModel = require('../models/logging'),
+    schedule = require('../../schedule/model'),
     favoriteService = require('../services/favorite'),
     favoriteMapping = require('../mappings/favorite'),
     tracker = require('../middleware/tracker');
@@ -75,7 +76,10 @@ workout.get$ = (req, res) => {
     // return Observable.merge(cacheIsRetrieved$,cacheIsNotRetrieved$);
 };
 
+
+
 workout.getDefault$ = () =>{
+    
     return Observable.of(workoutMapping.getDefault());
 };
 
@@ -84,6 +88,17 @@ workout.getLabel$ = () => {
     return Observable.of({
                  workout_label: label
             });
+};
+
+workout.getSchedule$ = (req, res) => {
+   
+    const callWorkoutService$ = workoutService.getSchedule(req.headers)                                                                                                                               
+                            .map((data) => workoutMapping.transformSchedule(data))                            
+                            .catch((error) => {                                                                  
+                                    loggingModel.logWithLabel("Workout Data Transform - Return Workout Schedule. Calling Workout Service", error, tracker.requestID, "ERROR");                                   
+                                    return Observable.of(schedule.getDefault());   
+                            });
+    return Observable.merge(callWorkoutService$);
 };
 
 workout.getFavorites$ = (req, res) =>{
